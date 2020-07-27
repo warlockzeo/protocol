@@ -1,25 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-// import { Container } from './styles';
+import './styles.css';
 
 const links = [
-  { titulo: 'Início', link: '/' },
+  { titulo: 'Início', link: '/home' },
   { titulo: 'Novo', link: '/novoprotocolo' },
-  { titulo: 'Buscar', link: '/buscar' },
-  { titulo: 'Relatórios', link: '/relatorios' },
+  { titulo: 'Busca', link: '/busca' },
+  { titulo: 'Relatório', link: '/relatorio' },
   { titulo: 'Usuários', link: '/usuarios' },
 ];
 
 const linksCode = links.map((link, i) => (
-  <li key={i}>
+  <li key={i} className='menu__link'>
     <a href={link.link}>{link.titulo}</a>
   </li>
 ));
-const Menu = () => {
+
+const Menu = ({ logout }) => {
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuIsOpen(!menuIsOpen);
+  };
+
+  const menuCss = menuIsOpen && 'menuShow';
   return (
-    <div>
-      <ul>{linksCode}</ul>
-    </div>
+    <>
+      <button className='menu__button' onClick={toggleMenu}>
+        Menu
+      </button>
+      <ul className={`menu ${menuCss}`}>
+        {linksCode}
+        <li className='menu__link logout' onClick={logout}>
+          Logout
+        </li>
+      </ul>
+    </>
   );
 };
 

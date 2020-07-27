@@ -8,7 +8,7 @@ const SplashScreen = () => {
     <div className='splashScreen'>
       <img
         src='/assets/images/logo-pmtn.jpg'
-        alt='Stand All Car Logo'
+        alt='Protocolo Central'
         className='logo'
       />
 

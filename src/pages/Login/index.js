@@ -8,16 +8,16 @@ import { login as submitLogin } from '../../utils/JWTAuth.js';
 import Loader from '../../components/Loader';
 
 const Wrap = Styled.div`
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
 `;
 
 const Image = Styled.img`
     width: 80%;
-    max-width: 300px;
+    max-width: 200px;
     height: auto;
     margin: 20px 0;
 `;
@@ -33,8 +33,13 @@ const Login = () => {
 
   const onSubmit = async ({ login, senha }) => {
     setIsLoading(true);
-    setLoginErrorMessage(await submitLogin({ login, senha }));
-    setIsLoading(false);
+    await submitLogin({ login, senha }).then((resp) => {
+      setLoginErrorMessage(resp);
+      console.log(resp);
+      if (resp.message) {
+        setIsLoading(false);
+      }
+    });
   };
 
   const onChangeField = () => {
@@ -48,7 +53,7 @@ const Login = () => {
 
       {isLoading ? (
         <Loader />
-      ) : (
+      ) : !localStorage.getItem('access_token') ? (
         <Form onSubmit={onSubmit} schema={schema}>
           <Row>
             <Col md={6}>
@@ -86,6 +91,8 @@ const Login = () => {
             Submit
           </Button>
         </Form>
+      ) : (
+        <h1>Já logado!</h1>
       )}
       {loginErrorMessage.message && (
         <Alert variant='danger'>{loginErrorMessage.message}</Alert>

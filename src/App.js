@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
-import { login, register } from './utils/JWTAuth.js';
-//import Routes from './routes';
+import { register } from './utils/JWTAuth.js';
 import Site from './utils/Site';
 import SplashScreen from './components/Splash';
 
@@ -31,30 +30,7 @@ class App extends Component {
     await register(info);
   }
 
-  async login() {
-    let info = {
-      login: 'kaima.abbes',
-      senha: '123456789',
-    };
-
-    await login(info);
-  }
-
   render() {
-    // const CodeTest = () => (
-    //   <div className='row'>
-    //     <h1>React JWT Authentication Example</h1>
-
-    //     <button className='btn btn-primary' onClick={this.register}>
-    //       Sign up
-    //     </button>
-
-    //     <button className='btn btn-primary' onClick={this.login}>
-    //       Log in
-    //     </button>
-    //   </div>
-    // );
-
     return (
       <div className='container'>
         {this.state.loading ? <SplashScreen /> : <Site />}

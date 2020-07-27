@@ -7,7 +7,7 @@ import Routes from '../routes';
 const Site = () => (
   <BrowserRouter>
     <div className='App'>
-      <Header />
+      {localStorage.getItem('access_token') && <Header />}
       <Routes />
     </div>
   </BrowserRouter>
