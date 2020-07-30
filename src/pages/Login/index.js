@@ -27,7 +27,6 @@ const schema = Yup.object().shape({
 });
 
 const Login = () => {
-  const [errorMessage, setErrorMessage] = useState('');
   const [loginErrorMessage, setLoginErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -43,7 +42,6 @@ const Login = () => {
   };
 
   const onChangeField = () => {
-    setErrorMessage('');
     setLoginErrorMessage('');
   };
 
@@ -66,10 +64,6 @@ const Login = () => {
                 onChange={onChangeField}
                 onFocus={onChangeField}
               />
-              {errorMessage &&
-                errorMessage.toLocaleLowerCase().search('login') > -1 && (
-                  <span>{errorMessage}</span>
-                )}
             </Col>
             <Col md={6}>
               <Input
@@ -81,10 +75,6 @@ const Login = () => {
                 onChange={onChangeField}
                 onFocus={onChangeField}
               />
-              {errorMessage &&
-                errorMessage.toLocaleLowerCase().search('passe') > -1 && (
-                  <span>{errorMessage}</span>
-                )}
             </Col>
           </Row>
           <Button type='submit' className='form-control' color='danger'>

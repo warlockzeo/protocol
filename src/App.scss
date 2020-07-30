@@ -21,6 +21,25 @@ button {
   margin: 10px 0;
 }
 
+h1 {
+  text-align: center;
+}
+
+input[type='checkbox'] {
+  margin: 0 10px;
+}
+
+input[type='text'],
+input[type='date'] {
+  margin: 0;
+}
+
+label {
+  font-size: 1em;
+  font-weight: bolder;
+  margin: 5px 0;
+}
+
 .App {
   display: flex;
   flex-direction: column;

@@ -1,71 +1,70 @@
 import React, { useState } from 'react';
 import { Alert, Row, Col, Button } from 'react-bootstrap';
 import { Form, Input } from '@rocketseat/unform';
+import Loader from '../../components/Loader';
+import Styled from 'styled-components';
 import * as Yup from 'yup';
-
-const protocolos = [1, 2, 3, 4, 5];
 
 const schema = Yup.object().shape({
   search: Yup.string().required('Precisa informar um protocolo para busca'),
 });
 
-const Busca = () => {
-  const [errorMessage, setErrorMessage] = useState('');
+const FormBusca = Styled.div`
+  flex: 1;
+  padding: 0 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  `;
 
-  const onSubmit = () => {
-    console.log('busca');
+const Busca = () => {
+  const [returnBusca, setReturnBusca] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSubmit = (data) => {
+    setIsLoading(true);
+    setReturnBusca(data.search);
+    setIsLoading(false);
   };
 
   const onChangeField = () => {
-    setErrorMessage('');
+    setReturnBusca('');
   };
 
   return (
     <>
       <h1>Busca de protocolo</h1>
-      {errorMessage ? (
-        <Alert variant='danger' className='text-center'>
-          Nenhum protocolo encontrado para esta busca
-        </Alert>
-      ) : (
-        <Form onSubmit={onSubmit} schema={schema}>
-          <Row>
-            <Col md={6}>
-              <Input
-                className='form-control'
-                type='text'
-                name='login'
-                id='login'
-                placeholder='Login'
-                onChange={onChangeField}
-                onFocus={onChangeField}
-              />
-              {errorMessage &&
-                errorMessage.toLocaleLowerCase().search('login') > -1 && (
-                  <span>{errorMessage}</span>
-                )}
-            </Col>
-            <Col md={6}>
-              <Input
-                className='form-control'
-                type='password'
-                name='senha'
-                id='senha'
-                placeholder='Senha'
-                onChange={onChangeField}
-                onFocus={onChangeField}
-              />
-              {errorMessage &&
-                errorMessage.toLocaleLowerCase().search('passe') > -1 && (
-                  <span>{errorMessage}</span>
-                )}
-            </Col>
-          </Row>
-          <Button type='submit' className='form-control' color='danger'>
-            Submit
-          </Button>
-        </Form>
-      )}
+      <FormBusca>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <Form onSubmit={onSubmit} schema={schema}>
+            <Row>
+              <Col md={12}>
+                <Input
+                  className='form-control'
+                  type='text'
+                  name='search'
+                  id='search'
+                  placeholder='Informe um protocolo para busca'
+                  onChange={onChangeField}
+                  onFocus={onChangeField}
+                />
+              </Col>
+            </Row>
+            <Button type='submit' className='form-control'>
+              Buscar
+            </Button>
+          </Form>
+        )}
+
+        {returnBusca === null && (
+          <Alert variant='danger' className='text-center'>
+            Nenhum protocolo encontrado para esta busca
+          </Alert>
+        )}
+        {returnBusca && <div>Resultado da busca: {returnBusca}</div>}
+      </FormBusca>
     </>
   );
 };
