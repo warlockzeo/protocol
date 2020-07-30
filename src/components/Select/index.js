@@ -1,9 +1,9 @@
 // import React from 'react';
 
 // const Select = (props) => {
-//   const { name, id, className, options, onChange, multiple } = props;
+//   const { options, ...rest } = props;
 
-//   const attribs = { name, id, className, options, onChange, multiple };
+//   const attribs = { ...rest };
 //   if (Array.isArray(options)) {
 //     const myOptions = options.map((opcao, i) => (
 //       <option key={i} value={opcao.value}>
@@ -31,14 +31,6 @@ export default function ReactSelect({
   const ref = useRef(null);
   const { fieldName, registerField, defaultValue, error } = useField(name);
 
-  function parseSelectValue(selectValue) {
-    if (!multiple) {
-      return selectValue ? selectValue.id : '';
-    }
-
-    return selectValue ? selectValue.map((option) => option.id) : [];
-  }
-
   useEffect(() => {
     registerField({
       name: fieldName,
@@ -49,22 +41,29 @@ export default function ReactSelect({
         selectRef.select.clearValue();
       },
     });
-  }, [fieldName, registerField, parseSelectValue]);
 
-  function getDefaultValue() {
-    if (!defaultValue) return null;
+    function parseSelectValue(selectValue) {
+      if (!multiple) {
+        return selectValue ? selectValue.id : '';
+      }
 
-    if (!multiple) {
-      return options.find((option) => option.id === defaultValue);
+      return selectValue ? selectValue.map((option) => option.id) : [];
     }
+  }, [fieldName, registerField, multiple]);
 
-    return options.filter((option) => defaultValue.includes(option.id));
-  }
+  // function getDefaultValue() {
+  //   if (!defaultValue) return null;
+
+  //   if (!multiple) {
+  //     return options.find((option) => option.id === defaultValue);
+  //   }
+
+  //   return options.filter((option) => defaultValue.includes(option.id));
+  // }
 
   return (
     <>
-      {label && <label htmlFor={fieldName}>{label}</label>}
-
+      {/*
       <Select
         name={fieldName}
         aria-label={fieldName}
@@ -74,6 +73,15 @@ export default function ReactSelect({
         ref={ref}
         getOptionValue={(option) => option.id}
         getOptionLabel={(option) => option.title}
+        {...rest}
+      /> */}
+
+      <Select
+        value={defaultValue}
+        name={fieldName}
+        options={options}
+        isMulti={multiple}
+        ref={ref}
         {...rest}
       />
 

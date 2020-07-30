@@ -3,8 +3,8 @@ import { Alert, Row, Col, Button } from 'react-bootstrap';
 import { Form, Input } from '@rocketseat/unform';
 import Styled from 'styled-components';
 import * as Yup from 'yup';
-import Select from '../../components/Select';
-//import Select from 'react-select';
+//import Select from '../../components/Select';
+import Select from 'react-select';
 
 const options = [
   { value: 'chocolate', label: 'Chocolate' },
@@ -42,7 +42,9 @@ const NovoProtocolo = () => {
     console.log(data);
   };
 
-  const onChangeField = () => {};
+  const onChangeField = (e) => {
+    //console.log(e.currentTarget.value);
+  };
 
   return (
     <>
@@ -52,7 +54,12 @@ const NovoProtocolo = () => {
           <Row>
             <Col md={3}>
               <label>Origem: </label>
-              <Select options={options} name='origem' id='origem' />
+              <Select
+                options={options}
+                name='origem'
+                id='origem'
+                onChange={onChangeField}
+              />
             </Col>
             <Col md={3}>
               <label>Departamento: </label>
@@ -129,17 +136,16 @@ const NovoProtocolo = () => {
             <Col md={3}>
               <label>Caráter: </label>
               <Select
-                className='form-control'
-                name='carater'
-                id='carater'
                 options={[
                   { label: 'Normal', value: 'normal' },
                   { label: 'Urgente', value: 'urgente' },
                   { label: 'Documento com prazo', value: 'doccomprazo' },
                   { label: 'Outros', value: 'outros' },
                 ]}
+                name='carater'
+                id='carater'
                 onChange={(e) => setTipoCarater(e.target.value)}
-              ></Select>
+              />
             </Col>
             {tipoCarater === 'doccomprazo' && (
               <Col md={4}>
