@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Alert, Row, Col, Button } from 'react-bootstrap';
-import { Form, Input } from '@rocketseat/unform';
+import { Form, Input, Select } from '@rocketseat/unform';
 import Styled from 'styled-components';
 import * as Yup from 'yup';
 //import Select from '../../components/Select';
-import Select from 'react-select';
+import MultiSelect from 'react-select';
 
 const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' },
+  { id: 'chocolate', title: 'Chocolate' },
+  { id: 'strawberry', title: 'Strawberry' },
+  { id: 'vanilla', title: 'Vanilla' },
 ];
 
 const schema = Yup.object().shape({
@@ -37,13 +37,40 @@ const FormCadastro = Styled.div`
 const NovoProtocolo = () => {
   const [comCopia, setComCopia] = useState(false);
   const [tipoCarater, setTipoCarater] = useState('');
+  const [multiSelectValue, setMultiSelectValue] = useState([]);
+  const [documentoValues, setDocumentoValues] = useState([]);
 
   const onSubmit = (data) => {
-    console.log(data);
+    const resp = {
+      ...data,
+      copia: multiSelectValue,
+      documento: documentoValues,
+    };
+    console.log(resp);
   };
 
   const onChangeField = (e) => {
     //console.log(e.currentTarget.value);
+  };
+
+  const onChangeMultiSelect = (eventValues) => {
+    const values = eventValues.map((eventValue) => eventValue.value);
+    setMultiSelectValue(values);
+  };
+
+  const onChangeDocumentos = (e) => {
+    const novoDocumento = e.currentTarget.value;
+    let documentos = documentoValues;
+
+    if (documentos.includes(novoDocumento)) {
+      documentos = documentoValues.filter(
+        (documento) => novoDocumento !== documento,
+      );
+    } else {
+      documentos.push(novoDocumento);
+    }
+
+    setDocumentoValues(documentos);
   };
 
   return (
@@ -59,6 +86,7 @@ const NovoProtocolo = () => {
                 name='origem'
                 id='origem'
                 onChange={onChangeField}
+                className='form-control'
               />
             </Col>
             <Col md={3}>
@@ -75,7 +103,12 @@ const NovoProtocolo = () => {
             </Col>
             <Col md={3}>
               <label>Destino: </label>
-              <Select options={options} name='destino' id='destino' />
+              <Select
+                options={options}
+                name='destino'
+                id='destino'
+                className='form-control'
+              />
             </Col>
             <Col md={3}>
               <label>Departamento: </label>
@@ -99,13 +132,17 @@ const NovoProtocolo = () => {
                 onClick={() => setComCopia(!comCopia)}
               />
               {comCopia && (
-                <Select
+                <MultiSelect
                   isMulti
                   name='copia'
                   id='copia'
-                  options={options}
+                  options={[
+                    { value: 'banana', label: 'Banana' },
+                    { value: 'mamao', label: 'Mamão' },
+                  ]}
                   className='basic-multi-select'
                   classNamePrefix='select'
+                  onChange={onChangeMultiSelect}
                 />
               )}
             </Col>
@@ -137,14 +174,15 @@ const NovoProtocolo = () => {
               <label>Caráter: </label>
               <Select
                 options={[
-                  { label: 'Normal', value: 'normal' },
-                  { label: 'Urgente', value: 'urgente' },
-                  { label: 'Documento com prazo', value: 'doccomprazo' },
-                  { label: 'Outros', value: 'outros' },
+                  { title: 'Normal', id: 'normal' },
+                  { title: 'Urgente', id: 'urgente' },
+                  { title: 'Documento com prazo', id: 'doccomprazo' },
+                  { title: 'Outros', id: 'outros' },
                 ]}
                 name='carater'
                 id='carater'
                 onChange={(e) => setTipoCarater(e.target.value)}
+                className='form-control'
               />
             </Col>
             {tipoCarater === 'doccomprazo' && (
@@ -180,41 +218,52 @@ const NovoProtocolo = () => {
               <label style={{ width: '100%' }}>Documento: </label>
               <input
                 type='checkbox'
-                name='documento'
-                id='oficio'
+                name='docOficio'
+                id='docOficio'
                 value='Ofício'
+                onChange={onChangeDocumentos}
               />
-              <label htmlFor='oficio'>Ofício</label>
+              <label htmlFor='docOficio'>Ofício</label>
               <input
                 type='checkbox'
-                name='documento'
-                id='requisicao'
+                name='docrequisicao'
+                id='docrequisicao'
                 value='Requisição'
+                onChange={onChangeDocumentos}
               />
-              <label htmlFor='requisicao'>Requisição</label>
-              <input type='checkbox' name='documento' id='pl' value='PL' />
-              <label htmlFor='pl'>PL</label>
+              <label htmlFor='docRequisicao'>Requisição</label>
               <input
                 type='checkbox'
-                name='documento'
-                id='declaracao'
+                name='docPl'
+                id='docPl'
+                value='PL'
+                onChange={onChangeDocumentos}
+              />
+              <label htmlFor='docPl'>PL</label>
+              <input
+                type='checkbox'
+                name='docDeclaracao'
+                id='docDeclaracao'
                 value='Declaração'
+                onChange={onChangeDocumentos}
               />
-              <label htmlFor='declaracao'>Declaração</label>
+              <label htmlFor='docDeclaracao'>Declaração</label>
               <input
                 type='checkbox'
-                name='documento'
-                id='portaria'
+                name='docPortaria'
+                id='docPortaria'
                 value='Portaria'
+                onChange={onChangeDocumentos}
               />
-              <label htmlFor='portaria'>Portaria</label>
+              <label htmlFor='docPortaria'>Portaria</label>
               <input
                 type='checkbox'
-                name='documento'
-                id='outros'
+                name='docOutros'
+                id='docOutros'
                 value='Outros'
+                onChange={onChangeDocumentos}
               />
-              <label htmlFor='outros'>Outros</label>
+              <label htmlFor='docOutros'>Outros</label>
             </Col>
             <Col md={12}>
               <label>Obs: </label>
