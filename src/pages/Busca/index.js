@@ -15,7 +15,12 @@ const FormBusca = Styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  
   `;
+
+const DivResultado = Styled.div`
+  width: 100%;
+`;
 
 const Busca = () => {
   const [returnBusca, setReturnBusca] = useState('');
@@ -24,7 +29,7 @@ const Busca = () => {
   const onSubmit = (data) => {
     setIsLoading(true);
     setReturnBusca(data.search);
-    setIsLoading(false);
+    setTimeout(() => setIsLoading(false), 3000);
   };
 
   const onChangeField = () => {
@@ -38,32 +43,40 @@ const Busca = () => {
         {isLoading ? (
           <Loader />
         ) : (
-          <Form onSubmit={onSubmit} schema={schema}>
-            <Row>
-              <Col md={12}>
-                <Input
-                  className='form-control'
-                  type='text'
-                  name='search'
-                  id='search'
-                  placeholder='Informe um protocolo para busca'
-                  onChange={onChangeField}
-                  onFocus={onChangeField}
-                />
-              </Col>
-            </Row>
-            <Button type='submit' className='form-control'>
-              Buscar
-            </Button>
-          </Form>
+          <>
+            <Form onSubmit={onSubmit} schema={schema}>
+              <Row>
+                <Col md={12}>
+                  <Input
+                    className='form-control'
+                    type='text'
+                    name='search'
+                    id='search'
+                    placeholder='Informe um protocolo para busca'
+                    onChange={onChangeField}
+                    onFocus={onChangeField}
+                  />
+                </Col>
+              </Row>
+              <Button type='submit' className='form-control'>
+                Buscar
+              </Button>
+            </Form>
+            {returnBusca === null && (
+              <Alert variant='danger' className='text-center'>
+                Nenhum protocolo encontrado para esta busca
+              </Alert>
+            )}
+            {returnBusca && (
+              <DivResultado>
+                <Col md={12} className='text-left'>
+                  <strong>Protocolos encontrados:</strong>
+                  <Col md={12}>{returnBusca}</Col>
+                </Col>
+              </DivResultado>
+            )}
+          </>
         )}
-
-        {returnBusca === null && (
-          <Alert variant='danger' className='text-center'>
-            Nenhum protocolo encontrado para esta busca
-          </Alert>
-        )}
-        {returnBusca && <div>Resultado da busca: {returnBusca}</div>}
       </FormBusca>
     </>
   );
