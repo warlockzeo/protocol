@@ -1,5 +1,6 @@
 .menu {
   padding: 0;
+  z-index: 998;
 }
 
 .menu__link {

@@ -1,46 +1,145 @@
-import React from 'react';
-import { Table } from 'react-bootstrap';
+import React, { useState } from 'react';
+import ListUsers from '../../components/ListUsers';
+import FormBlockUser from '../../components/FormBlockUser';
+import FormUnblockUser from '../../components/FormUnblockUser';
+import FormAddEditUser from '../../components/FormAddEditUser';
+import FormChangePassword from '../../components/FormChangePassword';
 
-// import { Container } from './styles';
-
-const users = [
-  { id: 2, nome: 'marcos', login: 'mark' },
-  { id: 5, nome: 'joao', login: 'john' },
+const initialUsers = [
+  { id: 2, nome: 'marcos', login: 'mark', status: 'active' },
+  { id: 5, nome: 'joao', login: 'john', status: 'blocked' },
 ];
 
-const handleDelete = (id) => {
-  console.log(`delete ${id}`);
-};
-const handleEdit = (id) => {
-  console.log(`edit ${id}`);
-};
-
-const keyFields = Object.keys(users[0]).filter((field) => field !== 'id');
-const thead = keyFields.map((campo, index) => <td key={index}>{campo}</td>);
-
-const tbody = users.map((user) => {
-  return (
-    <tr key={user.id}>
-      <td>{user.nome}</td>
-      <td>{user.login}</td>
-      <td className='text-right'>
-        <button onClick={() => handleEdit(user.id)}>edit</button>
-        <button onClick={() => handleDelete(user.id)}>delete</button>
-      </td>
-    </tr>
-  );
-});
-
 const Usuarios = () => {
+  const [users, setUsers] = useState(initialUsers);
+  const [show, setShow] = useState('list');
+  const [actualUser, setActualUser] = useState(null);
+
+  const onBlock = (id) => {
+    selectUser(id);
+    setShow('block');
+  };
+
+  const onUnblock = (id) => {
+    selectUser(id);
+    setShow('unblock');
+  };
+
+  const onAdd = () => {
+    setShow('addEdit');
+  };
+
+  const onEdit = (id) => {
+    selectUser(id);
+    setShow('addEdit');
+  };
+
+  const onChangePassword = (id) => {
+    selectUser(id);
+    setShow('password');
+  };
+
+  const resetUsersPage = () => {
+    setActualUser(null);
+    setShow('list');
+  };
+
+  const onCancel = () => {
+    resetUsersPage();
+  };
+
+  const selectUser = (id) => {
+    const selectedUser = users.filter((user) => user.id === id);
+    setActualUser(selectedUser[0]);
+  };
+
+  const handleBlock = () => {
+    const newUsers = users.map((user) => {
+      const { id, nome, login } = user;
+      if (id === actualUser.id) {
+        return { status: 'blocked', id, nome, login };
+      }
+      return user;
+    });
+    setUsers(newUsers);
+    resetUsersPage();
+  };
+
+  const handleUnblock = () => {
+    const newUsers = users.map((user) => {
+      const { id, nome, login } = user;
+      if (id === actualUser.id) {
+        return { status: 'active', id, nome, login };
+      }
+      return user;
+    });
+    setUsers(newUsers);
+    resetUsersPage();
+  };
+
+  const handleEdit = ({ nome, login, status }) => {
+    const newUsers = users.map((user) => {
+      if (user.id === actualUser.id) {
+        return { id: user.id, nome, login, status };
+      }
+      return user;
+    });
+    setUsers(newUsers);
+    resetUsersPage();
+  };
+
+  const handleAdd = (data) => {
+    console.log(data);
+  };
+
+  const handleChangePassword = (data) => {
+    console.log(data);
+  };
+
   return (
     <>
-      <h1>Usuários</h1>
-      <Table striped hover responsive>
-        <thead>
-          <tr>{thead}</tr>
-        </thead>
-        <tbody>{tbody}</tbody>
-      </Table>
+      {show === 'list' && (
+        <ListUsers
+          users={users}
+          onAdd={onAdd}
+          onEdit={onEdit}
+          onBlock={onBlock}
+          onUnblock={onUnblock}
+          onChangePassword={onChangePassword}
+        />
+      )}
+
+      {show === 'block' && (
+        <FormBlockUser
+          onCancel={onCancel}
+          handleBlock={handleBlock}
+          user={actualUser}
+        />
+      )}
+
+      {show === 'unblock' && (
+        <FormUnblockUser
+          onCancel={onCancel}
+          handleUnblock={handleUnblock}
+          user={actualUser}
+        />
+      )}
+
+      {show === 'addEdit' && (
+        <FormAddEditUser
+          onCancel={onCancel}
+          handleAdd={handleAdd}
+          handleEdit={handleEdit}
+          user={actualUser}
+        />
+      )}
+
+      {show === 'password' && (
+        <FormChangePassword
+          onCancel={onCancel}
+          handleChangePassword={handleChangePassword}
+        />
+      )}
     </>
   );
 };

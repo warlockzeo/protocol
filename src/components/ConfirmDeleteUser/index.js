@@ -12,7 +12,7 @@ const Button = Styled.button`
   margin: 10px;
 `;
 
-const ConfirmDelete = props => (
+const ConfirmDelete = (props) => (
   <>
     <Card style={{ width: 400, maxWidth: '90%', margin: 'auto' }}>
       <CardBody>
@@ -24,10 +24,16 @@ const ConfirmDelete = props => (
           {props.info}?
         </CardText>
         <ButtonsBar>
-          <Button onClick={props.onDelete} className="btn btn-success form-control">
+          <Button
+            onClick={props.onDelete}
+            className='btn btn-success form-control'
+          >
             Sim
           </Button>
-          <Button onClick={props.onCancel} className="btn btn-danger form-control">
+          <Button
+            onClick={props.onCancel}
+            className='btn btn-danger form-control'
+          >
             Não
           </Button>
         </ButtonsBar>

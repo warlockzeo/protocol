@@ -31,10 +31,13 @@ const schema = Yup.object().shape({
 
 const FormCadastro = Styled.div`
   flex: 1;
-  padding: 0 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @media only screen and (min-width: 600px) {
+    padding: 0 100px;
+  }
 `;
 
 const Protocolo = Styled.span`
@@ -94,7 +97,7 @@ const NovoProtocolo = () => {
 
   return (
     <>
-      <h1>Cadastro de Novo Protocolo</h1>
+      <h1>Novo Protocolo</h1>
       <FormCadastro>
         {isLoading ? (
           <Loader />
