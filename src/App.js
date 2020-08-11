@@ -32,9 +32,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className='container'>
-        {this.state.loading ? <SplashScreen /> : <Site />}
-      </div>
+      <div className=''>{this.state.loading ? <SplashScreen /> : <Site />}</div>
     );
   }
 }

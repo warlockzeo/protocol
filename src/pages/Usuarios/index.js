@@ -97,7 +97,7 @@ const Usuarios = () => {
   };
 
   return (
-    <>
+    <div className='container'>
       {show === 'list' && (
         <ListUsers
           users={users}
@@ -140,7 +140,7 @@ const Usuarios = () => {
           handleChangePassword={handleChangePassword}
         />
       )}
-    </>
+    </div>
   );
 };
 

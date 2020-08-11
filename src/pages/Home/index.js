@@ -5,7 +5,7 @@ import AccordionCard from '../../components/AccordionCard';
 
 const Home = () => {
   return (
-    <Accordion>
+    <Accordion className='container'>
       <AccordionCard
         accordionKey='0'
         title='Protocolos com prazo'
