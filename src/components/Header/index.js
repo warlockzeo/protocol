@@ -10,7 +10,11 @@ const HeaderTag = Styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  margin: 20px 20px 0;
+  padding: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 980;
+  background-color: #ffffff;
 `;
 
 const Logo = Styled.img`
