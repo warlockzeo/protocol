@@ -10,7 +10,7 @@ const HeaderTag = Styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  margin: 20px;
+  margin: 20px 20px 0;
 `;
 
 const Logo = Styled.img`
@@ -33,18 +33,18 @@ const SubTitulo = Styled.h2`
 const tokenJwt = localStorage.getItem('access_token');
 const user = tokenJwt && jwt(tokenJwt).data;
 
-function Header() {
+const Header = () => {
   return (
     <HeaderTag>
       <Logo src='/assets/images/logo-pmtn.jpg' alt='logomarca' />
       <div>
         <Titulo>PROTOCOLO CENTRAL</Titulo>
         <SubTitulo>
-          Usuário: <strong>{user && user.nome}</strong>
+          Usuário: <strong>{user?.nome}</strong>
         </SubTitulo>
       </div>
       <Menu logout={logout} />
     </HeaderTag>
   );
-}
+};
 export default Header;

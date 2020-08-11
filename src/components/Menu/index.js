@@ -20,7 +20,7 @@ const Menu = ({ logout }) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
   const toggleMenu = () => {
-    setMenuIsOpen(!menuIsOpen);
+    setMenuIsOpen((menuIsOpen) => !menuIsOpen);
   };
 
   const menuCss = menuIsOpen && 'menuShow';

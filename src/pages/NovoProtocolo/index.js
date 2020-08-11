@@ -152,7 +152,7 @@ const NovoProtocolo = () => {
                   onFocus={onChangeField}
                 />
               </Col>
-              <Col md={3}>
+              <Col md={6}>
                 <label htmlFor='comCopia'>Enviar cópia: </label>
                 <input
                   type='checkbox'
@@ -176,7 +176,7 @@ const NovoProtocolo = () => {
                   />
                 )}
               </Col>
-              <Col md={5}>
+              <Col md={3}>
                 <label>Portador Nome: </label>
                 <Input
                   className='form-control'
@@ -188,7 +188,7 @@ const NovoProtocolo = () => {
                   onFocus={onChangeField}
                 />
               </Col>
-              <Col md={4}>
+              <Col md={3}>
                 <label>Portador Matrícula: </label>
                 <Input
                   className='form-control'
@@ -216,7 +216,7 @@ const NovoProtocolo = () => {
                 />
               </Col>
               {tipoCarater === 'doccomprazo' && (
-                <Col md={4}>
+                <Col md={3}>
                   <label>Prazo: </label>
                   <Input
                     className='form-control'
@@ -231,7 +231,7 @@ const NovoProtocolo = () => {
               )}
 
               {tipoCarater === 'outros' && (
-                <Col md={5}>
+                <Col md={3}>
                   <label>Outros: </label>
                   <Input
                     className='form-control'
@@ -244,7 +244,7 @@ const NovoProtocolo = () => {
                   />
                 </Col>
               )}
-              <Col md={8}>
+              <Col md={6}>
                 <label style={{ width: '100%' }}>Documento: </label>
                 <input
                   type='checkbox'

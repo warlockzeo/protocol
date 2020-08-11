@@ -79,7 +79,7 @@ const Usuarios = () => {
 
   const handleEdit = ({ nome, login, status }) => {
     const newUsers = users.map((user) => {
-      if (user.id === actualUser.id) {
+      if (user?.id === actualUser?.id) {
         return { id: user.id, nome, login, status };
       }
       return user;
