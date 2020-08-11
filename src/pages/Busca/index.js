@@ -29,8 +29,15 @@ const Busca = () => {
 
   const onSubmit = (data) => {
     setIsLoading(true);
-    setReturnBusca(data.search);
-    setTimeout(() => setIsLoading(false), 3000);
+    try {
+      const resp = data.search;
+      setReturnBusca(resp);
+      console.log(resp);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setTimeout(() => setIsLoading(false), 3000);
+    }
   };
 
   const onChangeField = () => {
@@ -47,7 +54,7 @@ const Busca = () => {
           <>
             <Form onSubmit={onSubmit} schema={schema}>
               <Row>
-                <Col md={12}>
+                <Col md={6}>
                   <Input
                     className='form-control'
                     type='text'
@@ -58,10 +65,16 @@ const Busca = () => {
                     onFocus={onChangeField}
                   />
                 </Col>
+                <Col md={6}>
+                  <Button
+                    type='submit'
+                    className='form-control'
+                    style={{ margin: 0 }}
+                  >
+                    Buscar
+                  </Button>
+                </Col>
               </Row>
-              <Button type='submit' className='form-control'>
-                Buscar
-              </Button>
             </Form>
             {returnBusca === null && (
               <Alert variant='danger' className='text-center'>

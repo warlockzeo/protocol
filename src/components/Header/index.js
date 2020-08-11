@@ -25,6 +25,8 @@ const Logo = Styled.img`
 
 const Titulo = Styled.h1`
   color: #ff0000;
+  border: none;
+  padding: 0;
   font-weight: bolder;
   font-size: 1.8em;
 `;

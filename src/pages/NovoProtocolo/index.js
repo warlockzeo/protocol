@@ -13,18 +13,17 @@ const options = [
 ];
 
 const schema = Yup.object().shape({
-  origem: Yup.string(),
+  origem: Yup.string().required('Selecione uma origem'),
   origemDepartamento: Yup.string(),
-  destino: Yup.string(),
+  destino: Yup.string().required('Selecione um destino'),
   destinoDepartamento: Yup.string(),
   comCopia: Yup.string(),
   copia: Yup.string(),
   portadorNome: Yup.string(),
   portadorMatricula: Yup.string(),
-  carater: Yup.string(),
+  carater: Yup.string().required('Selecione o caráter'),
   prazo: Yup.string(),
   caraterOutros: Yup.string(),
-  documento: Yup.string(),
   obs: Yup.string(),
   //destino: Yup.string().required('Precisa informar um protocolo para busca'),
 });
@@ -36,7 +35,7 @@ const FormCadastro = Styled.div`
   align-items: center;
 
   @media only screen and (min-width: 600px) {
-    padding: 0 100px;
+    padding: 0 20px;
   }
 `;
 
@@ -213,6 +212,7 @@ const NovoProtocolo = () => {
                   id='carater'
                   onChange={(e) => setTipoCarater(e.target.value)}
                   className='form-control'
+                  value='normal'
                 />
               </Col>
               {tipoCarater === 'doccomprazo' && (

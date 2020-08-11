@@ -22,7 +22,11 @@ button {
 }
 
 h1 {
-  text-align: center;
+  font-size: 1.5em;
+  font-weight: bolder;
+  text-align: left;
+
+  border-bottom: solid 3px #ff0000;
 }
 
 input[type='checkbox'] {
@@ -41,6 +45,10 @@ label {
   margin: 5px 0;
 }
 
+input + span,
+select + span {
+  color: #ff0000;
+}
 .App {
   display: flex;
   flex-direction: column;
