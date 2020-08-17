@@ -62,6 +62,7 @@ function FormAddEditUser({ onCancel, handleAdd, handleEdit, user }) {
               <label>nivel: </label>
               <Select
                 options={[
+                  { id: '10', title: 'Administrador' },
                   { id: '1', title: 'Ativo' },
                   { id: '0', title: 'Bloqueado' },
                 ]}

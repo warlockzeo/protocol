@@ -19,7 +19,16 @@ const ListUsers = ({
 
     const tbody = users.map((user) => {
       return (
-        <tr key={user.id} className={user.nivel === '0' ? 'table-danger' : ''}>
+        <tr
+          key={user.id}
+          className={
+            user.nivel === '0'
+              ? 'table-danger'
+              : user.nivel === '10'
+              ? 'table-success'
+              : ''
+          }
+        >
           <td>{user.nome}</td>
           <td>{user.login}</td>
           <td className='text-right'>
@@ -33,14 +42,17 @@ const ListUsers = ({
                 >
                   Editar
                 </Button>
-                <Button
-                  size='sm'
-                  variant='danger'
-                  className='buttonMargim'
-                  onClick={() => onBlock(user.id)}
-                >
-                  Bloquear
-                </Button>
+                {user.nivel !== '10' && (
+                  <Button
+                    size='sm'
+                    variant='danger'
+                    className='buttonMargim'
+                    onClick={() => onBlock(user.id)}
+                  >
+                    Bloquear
+                  </Button>
+                )}
+
                 <Button
                   size='sm'
                   variant='secondary'

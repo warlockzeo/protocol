@@ -183,6 +183,8 @@ const Usuarios = () => {
       resetUsersPage();
     } catch (e) {
       console.log(e);
+    } finally {
+      setTimeout(() => setIsLoading(false), 1500);
     }
   };
 
@@ -226,6 +228,63 @@ const Usuarios = () => {
     loadUsers();
   }, []);
 
+  let activeBlock: any;
+
+  switch (show) {
+    case 'block': {
+      activeBlock = (
+        <FormBlockUser
+          onCancel={onCancel}
+          handleBlock={handleBlock}
+          user={actualUser}
+        />
+      );
+      break;
+    }
+    case 'unblock': {
+      activeBlock = (
+        <FormUnblockUser
+          onCancel={onCancel}
+          handleUnblock={handleUnblock}
+          user={actualUser}
+        />
+      );
+      break;
+    }
+    case 'addEdit': {
+      activeBlock = (
+        <FormAddEditUser
+          onCancel={onCancel}
+          handleAdd={handleAdd}
+          handleEdit={handleEdit}
+          user={actualUser?.id && actualUser}
+        />
+      );
+      break;
+    }
+    case 'password': {
+      activeBlock = (
+        <FormChangePassword
+          onCancel={onCancel}
+          handleChangePassword={handleChangePassword}
+        />
+      );
+      break;
+    }
+    case 'list': {
+      activeBlock = (
+        <ListUsers
+          users={users}
+          onAdd={onAdd}
+          onEdit={onEdit}
+          onBlock={onBlock}
+          onUnblock={onUnblock}
+          onChangePassword={onChangePassword}
+        />
+      );
+      break;
+    }
+  }
   return (
     <>
       {isLoading ? (
@@ -233,48 +292,7 @@ const Usuarios = () => {
           <Loader />
         </Wrapp>
       ) : (
-        show === 'list' && (
-          <ListUsers
-            users={users}
-            onAdd={onAdd}
-            onEdit={onEdit}
-            onBlock={onBlock}
-            onUnblock={onUnblock}
-            onChangePassword={onChangePassword}
-          />
-        )
-      )}
-
-      {show === 'block' && (
-        <FormBlockUser
-          onCancel={onCancel}
-          handleBlock={handleBlock}
-          user={actualUser}
-        />
-      )}
-
-      {show === 'unblock' && (
-        <FormUnblockUser
-          onCancel={onCancel}
-          handleUnblock={handleUnblock}
-          user={actualUser}
-        />
-      )}
-
-      {show === 'addEdit' && (
-        <FormAddEditUser
-          onCancel={onCancel}
-          handleAdd={handleAdd}
-          handleEdit={handleEdit}
-          user={actualUser?.id && actualUser}
-        />
-      )}
-
-      {show === 'password' && (
-        <FormChangePassword
-          onCancel={onCancel}
-          handleChangePassword={handleChangePassword}
-        />
+        activeBlock
       )}
     </>
   );
