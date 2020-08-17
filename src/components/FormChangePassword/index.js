@@ -1,7 +1,13 @@
 import React from 'react';
 import { Row, Col, Alert, Button } from 'react-bootstrap';
 import { Form, Input } from '@rocketseat/unform';
+import * as Yup from 'yup';
 import Styled from 'styled-components';
+
+const schema = Yup.object().shape({
+  senha: Yup.string().min(3).trim(),
+  senha2: Yup.string().oneOf([Yup.ref('senha'), null], 'Senhas não são iguais'),
+});
 
 const GroupButton = Styled.div`
   margin: 10px 0 0 0;
@@ -15,7 +21,7 @@ const FormChangePassword = ({ onCancel, handleChangePassword }) => {
   return (
     <>
       <Alert variant='secondary' className='text-center'>
-        <Form>
+        <Form onSubmit={handleChangePassword} schema={schema}>
           <h1>Alterar senha</h1>
           <Fields>
             <Row className='justify-content-md-center'>
@@ -40,11 +46,7 @@ const FormChangePassword = ({ onCancel, handleChangePassword }) => {
             </Row>
           </Fields>
           <GroupButton>
-            <Button
-              className='buttonMargim'
-              variant='success'
-              onClick={handleChangePassword()}
-            >
+            <Button className='buttonMargim' variant='success' type='submit'>
               Confirmar
             </Button>
             <Button

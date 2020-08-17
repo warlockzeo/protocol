@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import './styles.css';
 
@@ -12,7 +13,7 @@ const links = [
 
 const linksCode = links.map((link, i) => (
   <li key={i} className='menu__link'>
-    <a href={link.link}>{link.titulo}</a>
+    <Link to={link.link}>{link.titulo}</Link>
   </li>
 ));
 

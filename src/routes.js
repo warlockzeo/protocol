@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import PrivateRoute from './components/PrivateRoute';
 
@@ -12,18 +12,16 @@ import Usuarios from './pages/Usuarios';
 import NoMatchPage from './pages/NoMatchPage';
 
 const Routes = () => (
-  <BrowserRouter>
-    <Switch>
-      <PrivateRoute exact path='/' component={Home} />
-      <PrivateRoute exact path='/home' component={Home} />
-      <Route path='/login' component={Login} />
-      <PrivateRoute exact path='/novoprotocolo' component={NovoProtocolo} />
-      <PrivateRoute exact path='/busca' component={Busca} />
-      <PrivateRoute exact path='/relatorio' component={Relatorio} />
-      <PrivateRoute exact path='/usuarios' component={Usuarios} />
-      <Route component={NoMatchPage} />
-    </Switch>
-  </BrowserRouter>
+  <Switch>
+    <PrivateRoute exact path='/' component={Home} />
+    <PrivateRoute exact path='/home' component={Home} />
+    <Route path='/login' component={Login} />
+    <PrivateRoute exact path='/novoprotocolo' component={NovoProtocolo} />
+    <PrivateRoute exact path='/busca' component={Busca} />
+    <PrivateRoute exact path='/relatorio' component={Relatorio} />
+    <PrivateRoute exact path='/usuarios' component={Usuarios} />
+    <Route component={NoMatchPage} />
+  </Switch>
 );
 
 export default Routes;

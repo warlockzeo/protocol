@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Styled from 'styled-components';
 import axios from 'axios';
 
 import ListUsers from '../../components/ListUsers';
@@ -6,9 +7,19 @@ import FormBlockUser from '../../components/FormBlockUser';
 import FormUnblockUser from '../../components/FormUnblockUser';
 import FormAddEditUser from '../../components/FormAddEditUser';
 import FormChangePassword from '../../components/FormChangePassword';
+import Loader from '../../components/Loader';
 
-const SERVER_URL = 'http://protocolo.v2.api';
-const SIGNUP_ENDPOINT = `${SERVER_URL}/users`;
+const SIGNUP_ENDPOINT = `${process.env.REACT_APP_URLBASEAPI}/users`;
+
+const Wrapp = Styled.div`
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+@media only screen and (min-width: 600px) {
+  padding: 0 100px;
+}
+`;
 
 const Usuarios = () => {
   interface IUser {
@@ -20,6 +31,7 @@ const Usuarios = () => {
   const [users, setUsers] = useState([{ id: 0, nome: '', login: '' }]);
   const [show, setShow] = useState('list');
   const [actualUser, setActualUser] = useState<IUser>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const onBlock = (id: number) => {
     selectUser(id);
@@ -41,6 +53,7 @@ const Usuarios = () => {
   };
 
   const onChangePassword = (id: number) => {
+    console.log(id);
     selectUser(id);
     setShow('password');
   };
@@ -60,6 +73,7 @@ const Usuarios = () => {
   };
 
   const handleBlock = async () => {
+    setIsLoading(true);
     try {
       await axios({
         method: 'post',
@@ -85,10 +99,13 @@ const Usuarios = () => {
       resetUsersPage();
     } catch (e) {
       console.log(e);
+    } finally {
+      setTimeout(() => setIsLoading(false), 1500);
     }
   };
 
   const handleUnblock = async () => {
+    setIsLoading(true);
     try {
       await axios({
         method: 'post',
@@ -110,6 +127,8 @@ const Usuarios = () => {
       resetUsersPage();
     } catch (e) {
       console.log(e);
+    } finally {
+      setTimeout(() => setIsLoading(false), 1500);
     }
   };
 
@@ -122,6 +141,7 @@ const Usuarios = () => {
     login: string;
     nivel: string;
   }) => {
+    setIsLoading(true);
     try {
       await axios({
         method: 'put',
@@ -142,10 +162,13 @@ const Usuarios = () => {
       resetUsersPage();
     } catch (e) {
       console.log(e);
+    } finally {
+      setTimeout(() => setIsLoading(false), 1500);
     }
   };
 
   const handleAdd = async (data: []) => {
+    setIsLoading(true);
     try {
       const response = await axios({
         method: 'post',
@@ -163,11 +186,28 @@ const Usuarios = () => {
     }
   };
 
-  const handleChangePassword = (data: []) => {
-    console.log(data);
+  const handleChangePassword = async (data: []) => {
+    setIsLoading(true);
+    try {
+      await axios({
+        method: 'post',
+        responseType: 'json',
+        url: SIGNUP_ENDPOINT,
+        data: JSON.stringify({
+          option: 'updatePassword',
+          body: { id: actualUser.id, ...data },
+        }),
+      });
+      resetUsersPage();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setTimeout(() => setIsLoading(false), 1500);
+    }
   };
 
   const loadUsers = async () => {
+    setIsLoading(true);
     try {
       const response = await axios({
         method: 'get',
@@ -177,6 +217,8 @@ const Usuarios = () => {
       setUsers(response.data);
     } catch (e) {
       console.log(e);
+    } finally {
+      setTimeout(() => setIsLoading(false), 1500);
     }
   };
 
@@ -186,15 +228,21 @@ const Usuarios = () => {
 
   return (
     <>
-      {show === 'list' && (
-        <ListUsers
-          users={users}
-          onAdd={onAdd}
-          onEdit={onEdit}
-          onBlock={onBlock}
-          onUnblock={onUnblock}
-          onChangePassword={onChangePassword}
-        />
+      {isLoading ? (
+        <Wrapp>
+          <Loader />
+        </Wrapp>
+      ) : (
+        show === 'list' && (
+          <ListUsers
+            users={users}
+            onAdd={onAdd}
+            onEdit={onEdit}
+            onBlock={onBlock}
+            onUnblock={onUnblock}
+            onChangePassword={onChangePassword}
+          />
+        )
       )}
 
       {show === 'block' && (

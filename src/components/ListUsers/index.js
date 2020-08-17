@@ -45,7 +45,7 @@ const ListUsers = ({
                   size='sm'
                   variant='secondary'
                   className='buttonMargim'
-                  onClick={(id) => onChangePassword()}
+                  onClick={() => onChangePassword(user.id)}
                 >
                   Mudar senha
                 </Button>

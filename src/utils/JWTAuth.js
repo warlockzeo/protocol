@@ -5,7 +5,7 @@ import axios from 'axios';
 const SERVER_URL = 'http://protocolo.v2.api';
 
 const login = async (data) => {
-  const LOGIN_ENDPOINT = `${SERVER_URL}/api/login.php`;
+  const LOGIN_ENDPOINT = `${SERVER_URL}/login.php`;
   try {
     let response = await axios({
       method: 'post',
