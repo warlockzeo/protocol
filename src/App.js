@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import { register } from './utils/JWTAuth.js';
 import Site from './utils/Site';
 import SplashScreen from './components/Splash';
 
@@ -17,17 +16,6 @@ class App extends Component {
         loading: false,
       });
     }, 1500);
-  }
-
-  async register() {
-    let info = {
-      nome: 'kaima',
-      nivel: '1',
-      login: 'kaima.abbes',
-      senha: '123456789',
-    };
-
-    await register(info);
   }
 
   render() {

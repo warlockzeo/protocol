@@ -78,7 +78,7 @@ const Login = () => {
             </Col>
           </Row>
           <Button type='submit' className='form-control' color='danger'>
-            Submit
+            Login
           </Button>
         </Form>
       ) : (

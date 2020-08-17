@@ -7,7 +7,7 @@ import Styled from 'styled-components';
 const schema = Yup.object().shape({
   nome: Yup.string().required('Precisa informar um nome'),
   login: Yup.string().required('Precisa informar um login'),
-  status: Yup.string().required('Precisa selecionar o status'),
+  nivel: Yup.string().required('Precisa selecionar o nivel'),
   senha: Yup.string().min(3).trim(),
   senha2: Yup.string().oneOf([Yup.ref('senha'), null], 'Senhas não são iguais'),
 });
@@ -59,20 +59,20 @@ function FormAddEditUser({ onCancel, handleAdd, handleEdit, user }) {
               />
             </Col>
             <Col md={4}>
-              <label>Status: </label>
+              <label>nivel: </label>
               <Select
                 options={[
-                  { id: 'active', title: 'Ativo' },
-                  { id: 'blocked', title: 'Bloqueado' },
+                  { id: '1', title: 'Ativo' },
+                  { id: '0', title: 'Bloqueado' },
                 ]}
-                name='status'
-                id='status'
+                name='nivel'
+                id='nivel'
                 onChange={onChangeField}
                 className='form-control'
               />
             </Col>
           </Row>
-          {user === null && (
+          {!user && (
             <Row className='justify-content-md-center'>
               <Col md={3}>
                 <label>Senha: </label>

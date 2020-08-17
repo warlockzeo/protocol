@@ -2,22 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 //import jwt from 'jwt-decode';
-const SERVER_URL = 'http://localhost/atuais/react/protocolo.v2.api';
-
-const register = async (data) => {
-  const SIGNUP_ENDPOINT = `${SERVER_URL}/api/register.php`;
-  try {
-    let response = await axios({
-      method: 'post',
-      responseType: 'json',
-      url: SIGNUP_ENDPOINT,
-      data: JSON.stringify(data),
-    });
-    console.log(response);
-  } catch (e) {
-    console.log(e);
-  }
-};
+const SERVER_URL = 'http://protocolo.v2.api';
 
 const login = async (data) => {
   const LOGIN_ENDPOINT = `${SERVER_URL}/api/login.php`;
@@ -62,4 +47,4 @@ const userAuth = localStorage.getItem('access_token');
 
 const isAuthenticated = () => !!userAuth;
 
-export { login, register, logout, isAuthenticated, userAuth };
+export { login, logout, isAuthenticated, userAuth };
