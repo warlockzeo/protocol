@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Styled from 'styled-components';
 import axios from 'axios';
 
@@ -32,6 +34,9 @@ const Usuarios = () => {
   const [show, setShow] = useState('list');
   const [actualUser, setActualUser] = useState<IUser>({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const counter = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   const onBlock = (id: number) => {
     selectUser(id);
@@ -226,7 +231,12 @@ const Usuarios = () => {
 
   useEffect(() => {
     loadUsers();
-  }, []);
+    dispatch({
+      type: 'Car',
+    });
+  }, [dispatch]);
+
+  console.log(counter);
 
   let activeBlock: any;
 
@@ -290,6 +300,15 @@ const Usuarios = () => {
       {isLoading ? (
         <Wrapp>
           <Loader />
+          <button
+            onClick={() =>
+              dispatch({
+                type: 'Car',
+              })
+            }
+          >
+            Car
+          </button>
         </Wrapp>
       ) : (
         activeBlock

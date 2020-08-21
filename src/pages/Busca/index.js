@@ -4,12 +4,15 @@ import { Form, Input } from '@rocketseat/unform';
 import Loader from '../../components/Loader';
 import Styled from 'styled-components';
 import * as Yup from 'yup';
+import axios from 'axios';
+
+const SIGNUP_ENDPOINT = `${process.env.REACT_APP_URLBASEAPI}/protocolos`;
 
 const schema = Yup.object().shape({
   search: Yup.string().required('Precisa informar um protocolo para busca'),
 });
 
-const FormBusca = Styled.div`
+const FormSearch = Styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -26,13 +29,20 @@ const DivResultado = Styled.div`
 const Busca = () => {
   const [returnBusca, setReturnBusca] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [protocolo, setProtocolo] = useState('');
 
-  const onSubmit = (data) => {
+  const onSubmit = async ({ search }) => {
     setIsLoading(true);
     try {
-      const resp = data.search;
-      setReturnBusca(resp);
-      console.log(resp);
+      const response = await axios({
+        method: 'post',
+        responseType: 'json',
+        url: SIGNUP_ENDPOINT,
+        data: JSON.stringify({ option: 'search', body: { search } }),
+      });
+      setProtocolo(search);
+      setReturnBusca(response.data);
+      //console.log(response.data);
     } catch (e) {
       console.log(e);
     } finally {
@@ -44,15 +54,31 @@ const Busca = () => {
     setReturnBusca('');
   };
 
+  let showReturnBusca = '';
+  if (returnBusca.length) {
+    showReturnBusca = returnBusca.map((ret) => {
+      return (
+        <p>
+          De: {ret.origem} - {ret.dep_origem}
+          <br />
+          Para: {ret.destino} - {ret.dep_destino} - Por: {ret.portador} /{' '}
+          {ret.mat}
+          <br />
+          {ret.copia}
+        </p>
+      );
+    });
+  }
+
   return (
     <>
       <h1>Busca de protocolo</h1>
-      <FormBusca>
+      <FormSearch>
         {isLoading ? (
           <Loader />
         ) : (
           <>
-            <Form onSubmit={onSubmit} schema={schema}>
+            <Form onSubmit={onSubmit} schema={schema} style={{ width: '100%' }}>
               <Row>
                 <Col md={6}>
                   <Input
@@ -63,14 +89,11 @@ const Busca = () => {
                     placeholder='Informe um protocolo para busca'
                     onChange={onChangeField}
                     onFocus={onChangeField}
+                    style={{ marginTop: 10 }}
                   />
                 </Col>
                 <Col md={6}>
-                  <Button
-                    type='submit'
-                    className='form-control'
-                    style={{ margin: 0 }}
-                  >
+                  <Button type='submit' className='form-control'>
                     Buscar
                   </Button>
                 </Col>
@@ -84,14 +107,14 @@ const Busca = () => {
             {returnBusca && (
               <DivResultado>
                 <Col md={12} className='text-left'>
-                  <strong>Protocolos encontrados:</strong>
-                  <Col md={12}>{returnBusca}</Col>
+                  <strong>Protocolo {protocolo}:</strong>
+                  <Col md={12}>{showReturnBusca}</Col>
                 </Col>
               </DivResultado>
             )}
           </>
         )}
-      </FormBusca>
+      </FormSearch>
     </>
   );
 };

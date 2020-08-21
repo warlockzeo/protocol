@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Alert, Row, Col, Button } from 'react-bootstrap';
 import { Form, Input, Select } from '@rocketseat/unform';
 import Styled from 'styled-components';
 import * as Yup from 'yup';
 import MultiSelect from 'react-select';
+import axios from 'axios';
+import jwt from 'jwt-decode';
 import Loader from '../../components/Loader';
 
-const options = [
-  { id: 'chocolate', title: 'Chocolate' },
-  { id: 'strawberry', title: 'Strawberry' },
-  { id: 'vanilla', title: 'Vanilla' },
-];
+const PROTOCOL_ENDPOINT = `${process.env.REACT_APP_URLBASEAPI}/protocolos`;
+const tokenJwt = localStorage.getItem('access_token');
+const actualUser = tokenJwt && jwt(tokenJwt).data;
 
 const schema = Yup.object().shape({
   origem: Yup.string().required('Selecione uma origem'),
@@ -25,7 +27,6 @@ const schema = Yup.object().shape({
   prazo: Yup.string(),
   caraterOutros: Yup.string(),
   obs: Yup.string(),
-  //destino: Yup.string().required('Precisa informar um protocolo para busca'),
 });
 
 const FormCadastro = Styled.div`
@@ -50,32 +51,48 @@ const NovoProtocolo = () => {
   const [tipoCarater, setTipoCarater] = useState('');
   const [multiSelectValue, setMultiSelectValue] = useState([]);
   const [documentoValues, setDocumentoValues] = useState([]);
+  const [errorForm, setErrorForm] = useState('');
   const [novoProtocolo, setNovoProtocolo] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [origens, setOrigens] = useState([]);
+  const [destinos, setDestinos] = useState([]);
 
-  const onSubmit = (data) => {
-    setIsLoading(true);
-    try {
-      const resp = {
-        ...data,
-        copia: multiSelectValue,
-        documento: documentoValues,
-      };
-      console.log(resp);
-      setNovoProtocolo('novo');
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setTimeout(() => setIsLoading(false), 3000);
+  const counter = useSelector((state) => state);
+
+  const onSubmit = async (data) => {
+    if (documentoValues.length) {
+      setIsLoading(true);
+      try {
+        const newData = {
+          ...data,
+          copia: multiSelectValue,
+          documento: documentoValues,
+        };
+
+        const response = await axios({
+          method: 'post',
+          responseType: 'json',
+          url: PROTOCOL_ENDPOINT,
+          data: JSON.stringify({ option: 'add', body: { ...newData } }),
+        });
+
+        setNovoProtocolo(response.data.protocolo);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setTimeout(() => setIsLoading(false), 3000);
+      }
+    } else {
+      setErrorForm('Precisa selecionar um tipo de documento.');
     }
   };
 
-  const onChangeField = (e) => {
-    //console.log(e.currentTarget.value);
+  const onNewProtocol = () => {
+    setNovoProtocolo('');
   };
 
   const onChangeMultiSelect = (eventValues) => {
-    const values = eventValues.map((eventValue) => eventValue.value);
+    const values = eventValues.map((eventValue) => eventValue?.value);
     setMultiSelectValue(values);
   };
 
@@ -90,9 +107,62 @@ const NovoProtocolo = () => {
     } else {
       documentos.push(novoDocumento);
     }
-
     setDocumentoValues(documentos);
   };
+
+  const onChangeOrigem = (e) => {
+    console.log(e.currentTarget.value);
+    console.log(actualUser);
+    if (actualUser.nivel >= 10) {
+      setDestinos(
+        origens.filter((origem) => origem.id !== e.currentTarget.value),
+      );
+    } else if (
+      actualUser.nivel < 10 &&
+      e.currentTarget.value === actualUser.reg
+    ) {
+      setDestinos(
+        origens.filter((origem) => origem.id !== e.currentTarget.value),
+      );
+    } else {
+      setDestinos(origens.filter((origem) => origem.id === actualUser.reg));
+    }
+  };
+
+  const optionsOrigemDestinoExterno = [
+    { id: 'Correios', title: 'Correios' },
+    { id: 'Câmara', title: 'Câmara' },
+    { id: 'TCE', title: 'TCE' },
+    { id: 'Fórum TJ', title: 'Fórum TJ' },
+    { id: 'Sindicato', title: 'Sindicato' },
+    { id: 'Compesa', title: 'Compesa' },
+    { id: 'Celpe', title: 'Celpe' },
+    { id: 'Polícia Militar', title: 'Polícia Militar' },
+    { id: 'Polícia Civil', title: 'Polícia Civil' },
+    { id: 'Igrejas', title: 'Igrejas' },
+    { id: 'Banco Real', title: 'Banco Real' },
+    { id: 'Banco do Brasil', title: 'Banco do Brasil' },
+    { id: 'CEF', title: 'CEF' },
+    { id: 'Conselho Tutelar', title: 'Conselho Tutelar' },
+    { id: 'Outros', title: 'Outros' },
+  ];
+
+  useEffect(() => {
+    console.log(counter);
+    setOrigens(
+      counter?.users
+        ? [
+            { id: '', title: '::: INTERNO :::' },
+            ...counter.users.map((user) => ({
+              id: user.id,
+              title: user.nome,
+            })),
+            { id: '', title: '::: EXTERNO :::' },
+            ...optionsOrigemDestinoExterno,
+          ]
+        : origens,
+    );
+  }, [counter.users]);
 
   return (
     <>
@@ -103,7 +173,12 @@ const NovoProtocolo = () => {
         ) : novoProtocolo ? (
           <Alert variant='success' className='text-center'>
             Protocolo cadastrado com sucesso. <br />
-            Seu protocolo é <Protocolo>{novoProtocolo}</Protocolo>
+            Seu protocolo é <br />
+            <Protocolo>{novoProtocolo}</Protocolo>
+            <br />
+            <Button variant='primary' onClick={onNewProtocol}>
+              Gerar outro protocolo
+            </Button>
           </Alert>
         ) : (
           <Form onSubmit={onSubmit} schema={schema}>
@@ -111,11 +186,11 @@ const NovoProtocolo = () => {
               <Col md={3}>
                 <label>Origem: </label>
                 <Select
-                  options={options}
+                  options={origens}
                   name='origem'
                   id='origem'
-                  onChange={onChangeField}
                   className='form-control'
+                  onChange={onChangeOrigem}
                 />
               </Col>
               <Col md={3}>
@@ -126,14 +201,12 @@ const NovoProtocolo = () => {
                   name='origemDepartamento'
                   id='origemDepartamento'
                   placeholder='Dep. origem.  Opcional'
-                  onChange={onChangeField}
-                  onFocus={onChangeField}
                 />
               </Col>
               <Col md={3}>
                 <label>Destino: </label>
                 <Select
-                  options={options}
+                  options={destinos}
                   name='destino'
                   id='destino'
                   className='form-control'
@@ -147,8 +220,6 @@ const NovoProtocolo = () => {
                   name='destinoDepartamento'
                   id='destinoDepartamento'
                   placeholder='Dep. destino.  Opcional'
-                  onChange={onChangeField}
-                  onFocus={onChangeField}
                 />
               </Col>
               <Col md={6}>
@@ -183,8 +254,6 @@ const NovoProtocolo = () => {
                   name='portadorNome'
                   id='portadorNome'
                   placeholder='Nome do portador'
-                  onChange={onChangeField}
-                  onFocus={onChangeField}
                 />
               </Col>
               <Col md={3}>
@@ -195,8 +264,6 @@ const NovoProtocolo = () => {
                   name='portadorMatricula'
                   id='portadorMatricula'
                   placeholder='Matrícula do portador'
-                  onChange={onChangeField}
-                  onFocus={onChangeField}
                 />
               </Col>
               <Col md={3}>
@@ -212,7 +279,7 @@ const NovoProtocolo = () => {
                   id='carater'
                   onChange={(e) => setTipoCarater(e.target.value)}
                   className='form-control'
-                  value='normal'
+                  defaultValue='normal'
                 />
               </Col>
               {tipoCarater === 'doccomprazo' && (
@@ -224,8 +291,6 @@ const NovoProtocolo = () => {
                     name='prazo'
                     id='prazo'
                     placeholder=''
-                    onChange={onChangeField}
-                    onFocus={onChangeField}
                   />
                 </Col>
               )}
@@ -239,8 +304,6 @@ const NovoProtocolo = () => {
                     name='caraterOutros'
                     id='caraterOutros'
                     placeholder=''
-                    onChange={onChangeField}
-                    onFocus={onChangeField}
                   />
                 </Col>
               )}
@@ -294,6 +357,7 @@ const NovoProtocolo = () => {
                   onChange={onChangeDocumentos}
                 />
                 <label htmlFor='docOutros'>Outros</label>
+                <p style={{ color: '#ff0000' }}>{errorForm}</p>
               </Col>
               <Col md={12}>
                 <label>Obs: </label>
@@ -304,8 +368,6 @@ const NovoProtocolo = () => {
                   id='obs'
                   placeholder=''
                   multiline
-                  onChange={onChangeField}
-                  onFocus={onChangeField}
                 />
               </Col>
             </Row>

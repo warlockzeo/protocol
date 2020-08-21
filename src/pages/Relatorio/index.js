@@ -24,7 +24,7 @@ const options = [
   { id: 'Em análise', title: 'Em análise' },
 ];
 
-const FormCadastro = Styled.div`
+const FormReport = Styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -61,7 +61,7 @@ const Relatorio = () => {
   return (
     <>
       <h1>Relatórios</h1>
-      <FormCadastro>
+      <FormReport>
         {isLoading ? (
           <Loader />
         ) : (
@@ -81,8 +81,8 @@ const Relatorio = () => {
                 <label>.</label>
                 <Select
                   options={options}
-                  name='origem'
-                  id='origem'
+                  name='departamento'
+                  id='departamento'
                   onChange={onChangeField}
                   className='form-control'
                   value='Todos'
@@ -93,8 +93,8 @@ const Relatorio = () => {
                 <Input
                   className='form-control'
                   type='date'
-                  name='destinoDepartamento'
-                  id='destinoDepartamento'
+                  name='de'
+                  id='de'
                   placeholder='Dep. destino.  Opcional'
                   onChange={onChangeField}
                   onFocus={onChangeField}
@@ -105,8 +105,8 @@ const Relatorio = () => {
                 <Input
                   className='form-control'
                   type='date'
-                  name='destinoDepartamento'
-                  id='destinoDepartamento'
+                  name='para'
+                  id='para'
                   placeholder='Dep. destino.  Opcional'
                   onChange={onChangeField}
                   onFocus={onChangeField}
@@ -118,7 +118,8 @@ const Relatorio = () => {
             </Button>
           </Form>
         )}
-      </FormCadastro>
+        {returnBusca && 'Resultado do relatório'}
+      </FormReport>
     </>
   );
 };
