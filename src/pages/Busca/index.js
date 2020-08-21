@@ -5,6 +5,9 @@ import Loader from '../../components/Loader';
 import Styled from 'styled-components';
 import * as Yup from 'yup';
 import axios from 'axios';
+import moment from 'moment';
+
+import './styles.css';
 
 const SIGNUP_ENDPOINT = `${process.env.REACT_APP_URLBASEAPI}/protocolos`;
 
@@ -26,8 +29,12 @@ const DivResultado = Styled.div`
   width: 100%;
 `;
 
+const P = Styled.p`
+  margin-bottom: 0;
+`;
+
 const Busca = () => {
-  const [returnBusca, setReturnBusca] = useState('');
+  const [returnBusca, setReturnBusca] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [protocolo, setProtocolo] = useState('');
 
@@ -42,7 +49,6 @@ const Busca = () => {
       });
       setProtocolo(search);
       setReturnBusca(response.data);
-      //console.log(response.data);
     } catch (e) {
       console.log(e);
     } finally {
@@ -56,17 +62,60 @@ const Busca = () => {
 
   let showReturnBusca = '';
   if (returnBusca.length) {
-    showReturnBusca = returnBusca.map((ret) => {
-      return (
-        <p>
-          De: {ret.origem} - {ret.dep_origem}
-          <br />
-          Para: {ret.destino} - {ret.dep_destino} - Por: {ret.portador} /{' '}
-          {ret.mat}
-          <br />
-          {ret.copia}
-        </p>
-      );
+    showReturnBusca = returnBusca.map((ret, i) => {
+      if (ret.copia === 'copia') {
+        const date = moment(ret.data);
+        return (
+          <Row key={i} className='return-busca'>
+            <Col md={2} className='text-center'>
+              {date.format('DD/MM/YYYY, h:mm:ss a')}
+            </Col>
+            <Col md={10}>
+              <P>
+                <strong>De: </strong>
+                {ret.origem} - {ret.dep_origem}
+                <br />
+                <strong>Para: </strong>
+                {ret.destino} - {ret.dep_destino} - Por: {ret.portador} /
+                {ret.mat}
+                <br />
+                <strong>{ret.copia}</strong>
+              </P>
+            </Col>
+          </Row>
+        );
+      } else {
+        const date = moment(ret.data);
+        return (
+          <Row key={i} className='return-busca-head'>
+            <Col md={2} className='text-center'>
+              {date.format('DD/MM/YYYY, h:mm:ss a')}
+            </Col>
+            <Col md={3}>
+              <P>
+                <strong>De:</strong> {ret.origem} - {ret.dep_origem}
+                <br />
+                <strong>Para: </strong>
+                {ret.destino} - {ret.dep_destino}
+                <br />
+                <strong>Por: </strong> {ret.portador} /{ret.mat}
+                <br />
+                <strong>Cópias para:</strong> {ret.copia}
+              </P>
+            </Col>
+            <Col md={4}>{ret.obs}</Col>
+            <Col md={1} className='text-center'>
+              {ret.doc}
+            </Col>
+            <Col md={1} className='text-center'>
+              {ret.situacao}
+            </Col>
+            <Col md={1} className='text-center'>
+              {ret.carater}
+            </Col>
+          </Row>
+        );
+      }
     });
   }
 
@@ -107,8 +156,18 @@ const Busca = () => {
             {returnBusca && (
               <DivResultado>
                 <Col md={12} className='text-left'>
-                  <strong>Protocolo {protocolo}:</strong>
-                  <Col md={12}>{showReturnBusca}</Col>
+                  <div
+                    style={{
+                      color: '#ff0000',
+                      margin: '20px 0',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    Protocolo {protocolo}:
+                  </div>
+                  <Col md={12}>
+                    <div id='return-busca'>{showReturnBusca}</div>
+                  </Col>
                 </Col>
               </DivResultado>
             )}
