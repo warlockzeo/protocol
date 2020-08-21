@@ -153,10 +153,12 @@ const NovoProtocolo = () => {
       counter?.users
         ? [
             { id: '', title: '::: INTERNO :::' },
-            ...counter.users.map((user) => ({
-              id: user.id,
-              title: user.nome,
-            })),
+            ...counter.users
+              .filter((user) => user.nivel > 0)
+              .map((user) => ({
+                id: user.id,
+                title: user.nome,
+              })),
             { id: '', title: '::: EXTERNO :::' },
             ...optionsOrigemDestinoExterno,
           ]

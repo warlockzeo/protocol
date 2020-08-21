@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Styled from 'styled-components';
 import axios from 'axios';
 
@@ -29,6 +30,7 @@ const Usuarios = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const counter = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   const onBlock = (id) => {
     selectUser(id);
@@ -88,7 +90,14 @@ const Usuarios = () => {
         }
         return user;
       });
+
       setUsers(newUsers);
+
+      dispatch({
+        type: 'List',
+        data: newUsers,
+      });
+
       resetUsersPage();
     } catch (e) {
       console.log(e);
@@ -117,6 +126,12 @@ const Usuarios = () => {
         return user;
       });
       setUsers(newUsers);
+
+      dispatch({
+        type: 'List',
+        data: newUsers,
+      });
+
       resetUsersPage();
     } catch (e) {
       console.log(e);
@@ -144,6 +159,12 @@ const Usuarios = () => {
         return user;
       });
       setUsers(newUsers);
+
+      dispatch({
+        type: 'List',
+        data: newUsers,
+      });
+
       resetUsersPage();
     } catch (e) {
       console.log(e);
@@ -165,6 +186,12 @@ const Usuarios = () => {
       let newUsers = users;
       newUsers.push(response.data);
       setUsers(newUsers);
+
+      dispatch({
+        type: 'List',
+        data: newUsers,
+      });
+
       resetUsersPage();
     } catch (e) {
       console.log(e);
@@ -194,8 +221,8 @@ const Usuarios = () => {
   };
 
   useEffect(() => {
-    setUsers(counter?.users ? counter.users : users);
-  }, [counter, users]);
+    setUsers(counter.users ? counter.users : users);
+  }, [counter.users]);
 
   let activeBlock;
 
