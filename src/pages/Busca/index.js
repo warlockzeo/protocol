@@ -73,11 +73,13 @@ const Busca = () => {
             <Col md={10}>
               <P>
                 <strong>De: </strong>
-                {ret.origem} - {ret.dep_origem}
+                {!!ret.origemNome ? ret.origemNome : ret.origem} -{' '}
+                {ret.dep_origem}
                 <br />
                 <strong>Para: </strong>
-                {ret.destino} - {ret.dep_destino} - Por: {ret.portador} /
-                {ret.mat}
+                {!!ret.destinoNome ? ret.destinoNome : ret.destino} -
+                {ret.dep_destino} - Por:
+                {ret.portador} /{ret.mat}
                 <br />
                 <strong>{ret.copia}</strong>
               </P>
@@ -93,10 +95,13 @@ const Busca = () => {
             </Col>
             <Col md={3}>
               <P>
-                <strong>De:</strong> {ret.origem} - {ret.dep_origem}
+                <strong>De:</strong>
+                {!!ret.origemNome ? ret.origemNome : ret.origem} -{' '}
+                {ret.dep_origem}
                 <br />
                 <strong>Para: </strong>
-                {ret.destino} - {ret.dep_destino}
+                {!!ret.destinoNome ? ret.destinoNome : ret.destino} -
+                {ret.dep_destino}
                 <br />
                 <strong>Por: </strong> {ret.portador} /{ret.mat}
                 <br />

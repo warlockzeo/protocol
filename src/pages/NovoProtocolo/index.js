@@ -111,8 +111,8 @@ const NovoProtocolo = () => {
   };
 
   const onChangeOrigem = (e) => {
-    console.log(e.currentTarget.value);
-    console.log(actualUser);
+    // console.log(e.currentTarget.value);
+    // console.log(actualUser);
     if (actualUser.nivel >= 10) {
       setDestinos(
         origens.filter((origem) => origem.id !== e.currentTarget.value),
@@ -238,10 +238,12 @@ const NovoProtocolo = () => {
                     isMulti
                     name='copia'
                     id='copia'
-                    options={[
-                      { value: 'banana', label: 'Banana' },
-                      { value: 'mamao', label: 'Mamão' },
-                    ]}
+                    options={destinos
+                      .filter((destino) => destino.id !== actualUser.reg)
+                      .map((destino) => ({
+                        value: destino.id,
+                        label: destino.title,
+                      }))}
                     className='basic-multi-select'
                     classNamePrefix='select'
                     onChange={onChangeMultiSelect}
