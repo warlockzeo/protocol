@@ -274,9 +274,9 @@ const NovoProtocolo = () => {
                 <label>Caráter: </label>
                 <Select
                   options={[
-                    { title: 'Normal', id: 'normal' },
-                    { title: 'Urgente', id: 'urgente' },
-                    { title: 'Documento com prazo', id: 'doccomprazo' },
+                    { title: 'Normal', id: 'Normal' },
+                    { title: 'Urgente', id: 'Urgente' },
+                    { title: 'Documento com prazo', id: 'Documento com Prazo' },
                     { title: 'Outros', id: 'outros' },
                   ]}
                   name='carater'
@@ -286,7 +286,7 @@ const NovoProtocolo = () => {
                   defaultValue='normal'
                 />
               </Col>
-              {tipoCarater === 'doccomprazo' && (
+              {tipoCarater === 'Documento com Prazo' && (
                 <Col md={3}>
                   <label>Prazo: </label>
                   <Input

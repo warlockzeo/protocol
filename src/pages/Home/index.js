@@ -11,7 +11,13 @@ const actualUser = tokenJwt && jwt(tokenJwt).data;
 
 const Home = () => {
   const [list, setList] = useState([]);
-  const listProtocolos = async (id, situacao, carater = '', copia = '') => {
+  const listProtocolos = async (
+    origem = '',
+    destino = '',
+    situacao,
+    carater = '',
+    copia = '',
+  ) => {
     try {
       const response = await axios({
         method: 'post',
@@ -19,7 +25,7 @@ const Home = () => {
         url: SIGNUP_ENDPOINT,
         data: JSON.stringify({
           option: 'list',
-          body: { id, situacao, carater, copia },
+          body: { origem, destino, situacao, carater, copia },
         }),
       });
       setList(response.data);
@@ -35,93 +41,99 @@ const Home = () => {
         accordionKey='0'
         title='Protocolos com prazo'
         data={list}
-        className='bg-primary'
+        className='bg-danger'
         onClick={() =>
-          listProtocolos(actualUser.reg, 'Em trânsito', 'Documento com Prazo')
+          listProtocolos(
+            '',
+            actualUser.reg,
+            'Em trânsito',
+            'Documento com Prazo',
+          )
         }
+        btn={{ show: true, recebido: true }}
       />
       <AccordionCard
         accordionKey='1'
         title='Cópia de Protocolos a Receber'
         data={list}
         onClick={() =>
-          listProtocolos(actualUser.reg, 'Em trânsito', '', 'copia')
+          listProtocolos('', actualUser.reg, 'Em trânsito', '', 'copia')
         }
+        btn={{ show: true, recebido: true }}
       />
       <AccordionCard
         accordionKey='2'
         title='Protocolos a Receber'
         data={list}
-        onClick={() => listProtocolos(actualUser.reg, 'Em trânsito', '')}
+        onClick={() => listProtocolos('', actualUser.reg, 'Em trânsito', '')}
+        btn={{ show: true, recebido: true }}
       />
       <AccordionCard
         accordionKey='3'
         title='Protocolos Recebidos'
         data={list}
-        onClick={() =>
-          listProtocolos(actualUser.reg, 'Em trânsito', 'Documento com Prazo')
-        }
+        onClick={() => listProtocolos('', actualUser.reg, 'Recebido', '')}
+        btn={{
+          show: true,
+          arquivado: true,
+          encaminhado: true,
+          analise: true,
+          concluido: true,
+        }}
       />
       <AccordionCard
         accordionKey='4'
         title='Protocolos em Análise'
         data={list}
         onClick={() =>
-          listProtocolos(actualUser.reg, 'Em trânsito', 'Documento com Prazo')
+          listProtocolos('', actualUser.reg, 'Processo em análise', '')
         }
+        btn={{
+          show: true,
+          arquivado: true,
+          encaminhado: true,
+          concluido: true,
+        }}
       />
       <AccordionCard
         accordionKey='5'
         title='Protocolos Enviados - Interno'
-        data={list}
-        onClick={() =>
-          listProtocolos(actualUser.reg, 'Em trânsito', 'Documento com Prazo')
+        data={
+          Array.isArray(list)
+            ? list.filter((protocolo) => !isNaN(protocolo?.destino * 1))
+            : list
         }
+        onClick={() => listProtocolos(actualUser.reg, '', 'Em trânsito', '')}
       />
       <AccordionCard
         accordionKey='6'
         title='Protocolos Enviados - Externo'
-        data={list}
-        onClick={() =>
-          listProtocolos(actualUser.reg, 'Em trânsito', 'Documento com Prazo')
+        data={
+          Array.isArray(list)
+            ? list.filter((protocolo) => isNaN(protocolo?.destino))
+            : list
         }
-      />
-      <AccordionCard
-        accordionKey='7'
-        title='Protocolos Arquivados e Concluídos'
-        data={list}
-        className='bg-warning'
-        onClick={() =>
-          listProtocolos(actualUser.reg, 'Em trânsito', 'Documento com Prazo')
-        }
+        onClick={() => listProtocolos(actualUser.reg, '', 'Em trânsito', '')}
+        btn={{
+          show: true,
+          concluido: true,
+        }}
       />
       {actualUser.nivel >= 10 && (
         <>
           <AccordionCard
             accordionKey='8'
-            title='Todos os Protocolo sem Trânsito'
+            title='Todos os Protocolos em Trânsito'
             data={list}
             className='bg-success'
-            onClick={() =>
-              listProtocolos(
-                actualUser.reg,
-                'Em trânsito',
-                'Documento com Prazo',
-              )
-            }
+            onClick={() => listProtocolos('', '', 'Em trânsito', '')}
           />
           <AccordionCard
             accordionKey='9'
             title='Todos Protocolos Recebidos'
             data={list}
             className='bg-success'
-            onClick={() =>
-              listProtocolos(
-                actualUser.reg,
-                'Em trânsito',
-                'Documento com Prazo',
-              )
-            }
+            onClick={() => listProtocolos('', '', 'Recebido', '')}
           />
         </>
       )}
