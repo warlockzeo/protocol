@@ -37,7 +37,9 @@ const AccordionCard = ({
   data,
   onClick,
   btn = {},
+  callBack,
 }) => {
+  const btnClick = (reg, situacao) => callBack(reg, situacao);
   let items = data;
   if (Array.isArray(data) && data.length > 0) {
     items = data.map((protocolo) => {
@@ -103,12 +105,18 @@ const AccordionCard = ({
                   variant='primary'
                   type='submit'
                   className='form-control'
+                  onClick={() => btnClick(protocolo.reg, 'Recebido')}
                 >
                   Recebido
                 </Button>
               )}
               {btn.arquivado && (
-                <Button variant='info' type='submit' className='form-control'>
+                <Button
+                  variant='info'
+                  type='submit'
+                  className='form-control'
+                  onClick={() => btnClick(protocolo.reg, 'Arquivado')}
+                >
                   Arquivado
                 </Button>
               )}
@@ -126,6 +134,7 @@ const AccordionCard = ({
                   variant='warning'
                   type='submit'
                   className='form-control'
+                  onClick={() => btnClick(protocolo.reg, 'Processo em análise')}
                 >
                   Processo em Análise
                 </Button>
@@ -135,6 +144,7 @@ const AccordionCard = ({
                   variant='success'
                   type='submit'
                   className='form-control'
+                  onClick={() => btnClick(protocolo.reg, 'Processo concluído')}
                 >
                   Processo Concluído
                 </Button>

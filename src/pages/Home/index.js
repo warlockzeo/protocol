@@ -11,6 +11,7 @@ const actualUser = tokenJwt && jwt(tokenJwt).data;
 
 const Home = () => {
   const [list, setList] = useState([]);
+
   const listProtocolos = async (
     origem = '',
     destino = '',
@@ -35,6 +36,25 @@ const Home = () => {
     }
   };
 
+  const updateProtocolo = async (reg, situacao) => {
+    try {
+      await axios({
+        method: 'post',
+        responseType: 'json',
+        url: SIGNUP_ENDPOINT,
+        data: JSON.stringify({
+          option: 'update',
+          body: { reg, situacao },
+        }),
+      });
+
+      listProtocolos();
+    } catch (e) {
+      setList('Não foi possível atualizar o protocolo.');
+      console.log(e);
+    }
+  };
+
   return (
     <Accordion className='container'>
       <AccordionCard
@@ -51,6 +71,7 @@ const Home = () => {
           )
         }
         btn={{ show: true, recebido: true }}
+        callBack={updateProtocolo}
       />
       <AccordionCard
         accordionKey='1'
@@ -60,6 +81,7 @@ const Home = () => {
           listProtocolos('', actualUser.reg, 'Em trânsito', '', 'copia')
         }
         btn={{ show: true, recebido: true }}
+        callBack={updateProtocolo}
       />
       <AccordionCard
         accordionKey='2'
@@ -67,6 +89,7 @@ const Home = () => {
         data={list}
         onClick={() => listProtocolos('', actualUser.reg, 'Em trânsito', '')}
         btn={{ show: true, recebido: true }}
+        callBack={updateProtocolo}
       />
       <AccordionCard
         accordionKey='3'
@@ -80,6 +103,7 @@ const Home = () => {
           analise: true,
           concluido: true,
         }}
+        callBack={updateProtocolo}
       />
       <AccordionCard
         accordionKey='4'
@@ -94,6 +118,7 @@ const Home = () => {
           encaminhado: true,
           concluido: true,
         }}
+        callBack={updateProtocolo}
       />
       <AccordionCard
         accordionKey='5'
@@ -118,6 +143,7 @@ const Home = () => {
           show: true,
           concluido: true,
         }}
+        callBack={updateProtocolo}
       />
       {actualUser.nivel >= 10 && (
         <>

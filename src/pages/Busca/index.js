@@ -39,6 +39,7 @@ const Busca = () => {
   const [protocolo, setProtocolo] = useState('');
 
   const onSubmit = async ({ search }) => {
+    setProtocolo(search);
     setIsLoading(true);
     try {
       const response = await axios({
@@ -47,8 +48,11 @@ const Busca = () => {
         url: SIGNUP_ENDPOINT,
         data: JSON.stringify({ option: 'search', body: { search } }),
       });
-      setProtocolo(search);
-      setReturnBusca(response.data);
+
+      if (Array.isArray(response.data)) {
+        setReturnBusca(response.data);
+      }
+      //console.log('retorno submit', response.data);
     } catch (e) {
       console.log(e);
     } finally {
@@ -57,11 +61,12 @@ const Busca = () => {
   };
 
   const onChangeField = () => {
-    setReturnBusca('');
+    setReturnBusca([]);
+    setProtocolo('');
   };
 
   let showReturnBusca = '';
-  if (returnBusca.length) {
+  if (returnBusca.length > 0) {
     showReturnBusca = returnBusca.map((ret, i) => {
       if (ret.copia === 'copia') {
         const date = moment(ret.data);
@@ -105,7 +110,11 @@ const Busca = () => {
                 <br />
                 <strong>Por: </strong> {ret.portador} /{ret.mat}
                 <br />
-                <strong>Cópias para:</strong> {ret.copia}
+                {ret.copia && (
+                  <span>
+                    <strong>Cópias para:</strong> {ret.copia}
+                  </span>
+                )}
               </P>
             </Col>
             <Col md={4}>{ret.obs}</Col>
@@ -153,23 +162,29 @@ const Busca = () => {
                 </Col>
               </Row>
             </Form>
-            {returnBusca === null && (
-              <Alert variant='danger' className='text-center'>
-                Nenhum protocolo encontrado para esta busca
-              </Alert>
-            )}
             {returnBusca && (
               <DivResultado>
                 <Col md={12} className='text-left'>
-                  <div
-                    style={{
-                      color: '#ff0000',
-                      margin: '20px 0',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    Protocolo {protocolo}:
-                  </div>
+                  {protocolo && (
+                    <div
+                      style={{
+                        color: '#ff0000',
+                        margin: '20px 0',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      Protocolo: {protocolo}
+                    </div>
+                  )}
+
+                  {protocolo && !returnBusca.length ? (
+                    <Alert variant='danger' className='text-center'>
+                      Nenhum protocolo encontrado para esta busca
+                    </Alert>
+                  ) : (
+                    ''
+                  )}
+
                   <Col md={12}>
                     <div id='return-busca'>{showReturnBusca}</div>
                   </Col>
