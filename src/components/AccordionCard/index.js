@@ -38,6 +38,7 @@ const AccordionCard = ({
   onClick,
   btn = {},
   callBack,
+  encaminhamentoClick,
 }) => {
   const btnClick = (reg, situacao) => callBack(reg, situacao);
   let items = data;
@@ -125,6 +126,7 @@ const AccordionCard = ({
                   variant='secondary'
                   type='submit'
                   className='form-control'
+                  onClick={() => encaminhamentoClick(protocolo)}
                 >
                   Encaminhado
                 </Button>

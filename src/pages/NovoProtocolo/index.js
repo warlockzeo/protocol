@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Alert, Row, Col, Button } from 'react-bootstrap';
 import { Form, Input, Select } from '@rocketseat/unform';
@@ -47,6 +48,7 @@ const Protocolo = Styled.span`
 `;
 
 const NovoProtocolo = () => {
+  const { reg } = useParams();
   const [comCopia, setComCopia] = useState(false);
   const [tipoCarater, setTipoCarater] = useState('');
   const [multiSelectValue, setMultiSelectValue] = useState([]);
@@ -56,31 +58,54 @@ const NovoProtocolo = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [origens, setOrigens] = useState([]);
   const [destinos, setDestinos] = useState([]);
-
-  const counter = useSelector((state) => state);
+  const [protocolo, setProtocolo] = useState('');
+  const storage = useSelector((state) => state);
 
   const onSubmit = async (data) => {
     if (documentoValues.length) {
       setIsLoading(true);
       try {
-        const newData = {
-          ...data,
-          copia: multiSelectValue,
-          documento: documentoValues,
-        };
+        if (reg) {
+          console.log(reg);
+          const newData = {
+            ...data,
+            copia: multiSelectValue,
+            documento: documentoValues,
+            reg,
+            protocolo,
+            origem: actualUser.reg,
+            origemDepartamento: '',
+          };
 
-        const response = await axios({
-          method: 'post',
-          responseType: 'json',
-          url: PROTOCOL_ENDPOINT,
-          data: JSON.stringify({ option: 'add', body: { ...newData } }),
-        });
+          const response = await axios({
+            method: 'post',
+            responseType: 'json',
+            url: PROTOCOL_ENDPOINT,
+            data: JSON.stringify({ option: 'resend', body: { ...newData } }),
+          });
+          setTimeout(() => {
+            localStorage.removeItem('protocolo');
+            window.open(`/`, '_self');
+          }, 1500);
+        } else {
+          const newData = {
+            ...data,
+            copia: multiSelectValue,
+            documento: documentoValues,
+          };
 
-        setNovoProtocolo(response.data.protocolo);
+          const response = await axios({
+            method: 'post',
+            responseType: 'json',
+            url: PROTOCOL_ENDPOINT,
+            data: JSON.stringify({ option: 'add', body: { ...newData } }),
+          });
+          setNovoProtocolo(response.data.protocolo);
+        }
       } catch (e) {
         console.log(e);
       } finally {
-        setTimeout(() => setIsLoading(false), 3000);
+        setTimeout(() => setIsLoading(false), 1500);
       }
     } else {
       setErrorForm('Precisa selecionar um tipo de documento.');
@@ -111,19 +136,11 @@ const NovoProtocolo = () => {
   };
 
   const onChangeOrigem = (e) => {
-    // console.log(e.currentTarget.value);
-    // console.log(actualUser);
+    const eCurValue = Number.isInteger(e * 1) ? e : e?.currentTarget?.value;
     if (actualUser.nivel >= 10) {
-      setDestinos(
-        origens.filter((origem) => origem.id !== e.currentTarget.value),
-      );
-    } else if (
-      actualUser.nivel < 10 &&
-      e.currentTarget.value === actualUser.reg
-    ) {
-      setDestinos(
-        origens.filter((origem) => origem.id !== e.currentTarget.value),
-      );
+      setDestinos(origens.filter((origem) => origem.id !== eCurValue));
+    } else if (actualUser.nivel < 10 && eCurValue === actualUser.reg) {
+      setDestinos(origens.filter((origem) => origem.id !== eCurValue));
     } else {
       setDestinos(origens.filter((origem) => origem.id === actualUser.reg));
     }
@@ -148,27 +165,31 @@ const NovoProtocolo = () => {
   ];
 
   useEffect(() => {
-    console.log(counter);
-    setOrigens(
-      counter?.users
-        ? [
-            { id: '', title: '::: INTERNO :::' },
-            ...counter.users
-              .filter((user) => user.nivel > 0)
-              .map((user) => ({
-                id: user.id,
-                title: user.nome,
-              })),
-            { id: '', title: '::: EXTERNO :::' },
-            ...optionsOrigemDestinoExterno,
-          ]
-        : origens,
-    );
-  }, [counter.users]);
+    const dataOrigens = storage?.users
+      ? [
+          { id: '.', title: '::: INTERNO :::' },
+          ...storage.users
+            .filter((user) => user.nivel > 0)
+            .map((user) => ({
+              id: user.id,
+              title: user.nome,
+            })),
+          { id: '..', title: '::: EXTERNO :::' },
+          ...optionsOrigemDestinoExterno,
+        ]
+      : origens;
+    setOrigens(dataOrigens);
+
+    if (reg) {
+      const storageProtocolo = JSON.parse(localStorage.getItem('protocolo'));
+      setProtocolo(storageProtocolo.protocolo);
+      setDestinos(dataOrigens.filter((origem) => origem.id !== actualUser.reg));
+    }
+  }, [storage.users]);
 
   return (
     <>
-      <h1>Novo Protocolo</h1>
+      <h1>{reg ? `Encaminhar protocolo ${protocolo}` : 'Novo Protocolo'}</h1>
       <FormCadastro>
         {isLoading ? (
           <Loader />
@@ -183,28 +204,38 @@ const NovoProtocolo = () => {
             </Button>
           </Alert>
         ) : (
-          <Form onSubmit={onSubmit} schema={schema}>
+          <Form
+            onSubmit={onSubmit}
+            schema={schema}
+            initialData={reg && { origem: actualUser.reg }}
+          >
             <Row>
-              <Col md={3}>
-                <label>Origem: </label>
-                <Select
-                  options={origens}
-                  name='origem'
-                  id='origem'
-                  className='form-control'
-                  onChange={onChangeOrigem}
-                />
-              </Col>
-              <Col md={3}>
-                <label>Departamento: </label>
-                <Input
-                  className='form-control'
-                  type='text'
-                  name='origemDepartamento'
-                  id='origemDepartamento'
-                  placeholder='Dep. origem.  Opcional'
-                />
-              </Col>
+              {!reg ? (
+                <>
+                  <Col md={3}>
+                    <label>Origem: </label>
+                    <Select
+                      options={origens}
+                      name='origem'
+                      id='origem'
+                      className='form-control'
+                      onChange={onChangeOrigem}
+                    />
+                  </Col>
+                  <Col md={3}>
+                    <label>Departamento: </label>
+                    <Input
+                      className='form-control'
+                      type='text'
+                      name='origemDepartamento'
+                      id='origemDepartamento'
+                      placeholder='Dep. origem.  Opcional'
+                    />
+                  </Col>
+                </>
+              ) : (
+                <Input type='hidden' name='origem' id='origem' />
+              )}
               <Col md={3}>
                 <label>Destino: </label>
                 <Select

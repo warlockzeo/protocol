@@ -112,7 +112,7 @@ const Busca = () => {
                 <br />
                 {ret.copia && (
                   <span>
-                    <strong>Cópias para:</strong> {ret.copia}
+                    <strong>Cópias para:</strong> {ret.copia}{' '}
                   </span>
                 )}
               </P>
