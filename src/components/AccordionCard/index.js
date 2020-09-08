@@ -55,7 +55,7 @@ const AccordionCard = ({
           }
         >
           <TD className='text-center'>
-            <A href={protocolo.protocolo}>{protocolo.protocolo}</A>
+            <A href={`/busca/${protocolo.protocolo}`}>{protocolo.protocolo}</A>
           </TD>
           <TD className='text-center'>
             {date.format('DD/MM/YYYY, h:mm:ss a')}

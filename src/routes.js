@@ -18,6 +18,7 @@ const Routes = () => (
     <Route path='/login' component={Login} />
     <PrivateRoute exact path='/novoprotocolo' component={NovoProtocolo} />
     <PrivateRoute exact path='/busca/' component={Busca} />
+    <PrivateRoute exact path='/busca/:protocol' component={Busca} />
     <PrivateRoute exact path='/relatorio' component={Relatorio} />
     <PrivateRoute exact path='/usuarios' component={Usuarios} />
     <PrivateRoute exact path='/encaminhamento/:reg' component={NovoProtocolo} />

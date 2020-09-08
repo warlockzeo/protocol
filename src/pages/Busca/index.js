@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Alert, Row, Col, Button } from 'react-bootstrap';
 import { Form, Input } from '@rocketseat/unform';
 import Loader from '../../components/Loader';
@@ -34,6 +36,7 @@ const P = Styled.p`
 `;
 
 const Busca = () => {
+  const { protocol } = useParams();
   const [returnBusca, setReturnBusca] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [protocolo, setProtocolo] = useState('');
@@ -132,6 +135,13 @@ const Busca = () => {
       }
     });
   }
+
+  useEffect(() => {
+    if (protocol) {
+      onSubmit({ search: protocol });
+      console.log(protocol);
+    }
+  }, [protocol]);
 
   return (
     <>

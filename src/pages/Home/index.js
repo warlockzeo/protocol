@@ -57,7 +57,7 @@ const Home = () => {
 
   const encaminharProtocolo = (data) => {
     localStorage.setItem('protocolo', JSON.stringify(data));
-    window.open(`/encaminhamento/${data.reg}`, '_self');
+    window.open(`/encaminhamento/busca/${data.reg}`, '_self');
   };
 
   return (

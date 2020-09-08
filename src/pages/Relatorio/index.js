@@ -1,19 +1,35 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Row, Col, Button } from 'react-bootstrap';
 import { Form, Input, Select } from '@rocketseat/unform';
 import Styled from 'styled-components';
 import * as Yup from 'yup';
-
+import axios from 'axios';
 import Loader from '../../components/Loader';
 
 const schema = Yup.object().shape({
   secretaria: Yup.string().required('Selecione uma secretaria'),
+  status: Yup.string().required('Selecione o status dos protocolos'),
+  de: Yup.string().required('Selecione uma data inicial'),
+  ate: Yup.string().required('Selecione uma data final'),
 });
 
-const secretarias = [
-  { id: 'chocolate', title: 'Chocolate' },
-  { id: 'strawberry', title: 'Strawberry' },
-  { id: 'vanilla', title: 'Vanilla' },
+const secretariasOptions = [
+  { id: 'Correios', title: 'Correios' },
+  { id: 'Câmara', title: 'Câmara' },
+  { id: 'TCE', title: 'TCE' },
+  { id: 'Fórum TJ', title: 'Fórum TJ' },
+  { id: 'Sindicato', title: 'Sindicato' },
+  { id: 'Compesa', title: 'Compesa' },
+  { id: 'Celpe', title: 'Celpe' },
+  { id: 'Polícia Militar', title: 'Polícia Militar' },
+  { id: 'Polícia Civil', title: 'Polícia Civil' },
+  { id: 'Igrejas', title: 'Igrejas' },
+  { id: 'Banco Real', title: 'Banco Real' },
+  { id: 'Banco do Brasil', title: 'Banco do Brasil' },
+  { id: 'CEF', title: 'CEF' },
+  { id: 'Conselho Tutelar', title: 'Conselho Tutelar' },
 ];
 
 const options = [
@@ -36,8 +52,10 @@ const FormReport = Styled.div`
 `;
 
 const Relatorio = () => {
+  const [secretarias, setSecretarias] = useState([]);
   const [returnBusca, setReturnBusca] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const storage = useSelector((state) => state);
 
   const onSubmit = (data) => {
     setIsLoading(true);
@@ -58,6 +76,28 @@ const Relatorio = () => {
     //console.log(e.currentTarget.value);
   };
 
+  useEffect(() => {
+    const dataSecretarias = storage?.users
+      ? [
+          { id: 'Todos', title: 'Todos' },
+          { id: '.', title: '::: INTERNO :::' },
+          ...storage.users
+            .filter((user) => user.nivel > 0)
+            .map((user) => ({
+              id: user.id,
+              title: user.nome,
+            })),
+          { id: '..', title: '::: EXTERNO :::' },
+          ...secretariasOptions,
+        ]
+      : secretarias;
+    setSecretarias(dataSecretarias);
+  }, [storage]);
+
+  const initialData = {
+    secretaria: { id: 'Todos', title: 'Todos' },
+    status: { id: 'Todos', title: 'Todos' },
+  };
   return (
     <>
       <h1>Relatórios</h1>
@@ -65,7 +105,7 @@ const Relatorio = () => {
         {isLoading ? (
           <Loader />
         ) : (
-          <Form onSubmit={onSubmit} schema={schema}>
+          <Form onSubmit={onSubmit} schema={schema} initialData={initialData}>
             <Row>
               <Col md={3}>
                 <label>Secretaria: </label>
@@ -81,11 +121,10 @@ const Relatorio = () => {
                 <label>.</label>
                 <Select
                   options={options}
-                  name='departamento'
-                  id='departamento'
+                  name='status'
+                  id='status'
                   onChange={onChangeField}
                   className='form-control'
-                  value='Todos'
                 />
               </Col>
               <Col md={3}>
@@ -95,7 +134,7 @@ const Relatorio = () => {
                   type='date'
                   name='de'
                   id='de'
-                  placeholder='Dep. destino.  Opcional'
+                  placeholder='Data inicial'
                   onChange={onChangeField}
                   onFocus={onChangeField}
                 />
@@ -105,16 +144,16 @@ const Relatorio = () => {
                 <Input
                   className='form-control'
                   type='date'
-                  name='para'
-                  id='para'
-                  placeholder='Dep. destino.  Opcional'
+                  name='ate'
+                  id='ate'
+                  placeholder='Data final'
                   onChange={onChangeField}
                   onFocus={onChangeField}
                 />
               </Col>
             </Row>
             <Button type='submit' className='form-control'>
-              Gravar
+              Gerar Relatório
             </Button>
           </Form>
         )}
