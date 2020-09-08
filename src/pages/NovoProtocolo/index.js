@@ -77,7 +77,7 @@ const NovoProtocolo = () => {
             origemDepartamento: '',
           };
 
-          const response = await axios({
+          await axios({
             method: 'post',
             responseType: 'json',
             url: PROTOCOL_ENDPOINT,
