@@ -7,10 +7,15 @@ import Styled from 'styled-components';
 import * as Yup from 'yup';
 import axios from 'axios';
 import Loader from '../../components/Loader';
+import ProtocolList from '../../components/ProtocolList';
+import moment from 'moment';
+
+const PROTOCOL_ENDPOINT = `${process.env.REACT_APP_URLBASEAPI}/protocolos`;
+const today = moment().format('YYYY-MM-DD');
 
 const schema = Yup.object().shape({
   secretaria: Yup.string().required('Selecione uma secretaria'),
-  status: Yup.string().required('Selecione o status dos protocolos'),
+  situacao: Yup.string().required('Selecione o status dos protocolos'),
   de: Yup.string().required('Selecione uma data inicial'),
   ate: Yup.string().required('Selecione uma data final'),
 });
@@ -46,34 +51,44 @@ const FormReport = Styled.div`
   flex-direction: column;
   align-items: center;
 
-  @media only screen and (min-width: 600px) {
-    padding: 0 100px;
-  }
+//  @media only screen and (min-width: 600px) {
+//    padding: 0 100px;
+//  }
 `;
 
 const Relatorio = () => {
   const [secretarias, setSecretarias] = useState([]);
   const [returnBusca, setReturnBusca] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [initialDate, setInitialDate] = useState('');
   const storage = useSelector((state) => state);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    setReturnBusca('');
     setIsLoading(true);
+
     try {
-      const resp = {
+      const newData = {
         ...data,
       };
-      setReturnBusca(resp);
-      console.log(resp);
+
+      const ret = await axios({
+        method: 'post',
+        responseType: 'json',
+        url: PROTOCOL_ENDPOINT,
+        data: JSON.stringify({ option: 'report', body: { ...newData } }),
+      });
+
+      setTimeout(() => setReturnBusca(ret.data), 1700);
     } catch (e) {
       console.log(e);
     } finally {
-      setTimeout(() => setIsLoading(false), 3000);
+      setTimeout(() => setIsLoading(false), 1500);
     }
   };
 
-  const onChangeField = (e) => {
-    //console.log(e.currentTarget.value);
+  const onChangeInitialDateField = (e) => {
+    setTimeout(() => setInitialDate(e.currentTarget.value), 500);
   };
 
   useEffect(() => {
@@ -92,12 +107,18 @@ const Relatorio = () => {
         ]
       : secretarias;
     setSecretarias(dataSecretarias);
+    setInitialDate(today);
   }, [storage]);
 
-  const initialData = {
-    secretaria: { id: 'Todos', title: 'Todos' },
-    status: { id: 'Todos', title: 'Todos' },
-  };
+  const initialData = !Array.isArray(returnBusca)
+    ? {
+        secretaria: { id: 'Todos', title: 'Todos' },
+        situacao: { id: 'Todos', title: 'Todos' },
+        de: today,
+        ate: today,
+      }
+    : '';
+
   return (
     <>
       <h1>Relatórios</h1>
@@ -113,17 +134,15 @@ const Relatorio = () => {
                   options={secretarias}
                   name='secretaria'
                   id='secretaria'
-                  onChange={onChangeField}
                   className='form-control'
                 />
               </Col>
               <Col md={3}>
-                <label>.</label>
+                <label>Situação</label>
                 <Select
                   options={options}
-                  name='status'
-                  id='status'
-                  onChange={onChangeField}
+                  name='situacao'
+                  id='situacao'
                   className='form-control'
                 />
               </Col>
@@ -134,9 +153,9 @@ const Relatorio = () => {
                   type='date'
                   name='de'
                   id='de'
+                  max={today}
                   placeholder='Data inicial'
-                  onChange={onChangeField}
-                  onFocus={onChangeField}
+                  onChange={onChangeInitialDateField}
                 />
               </Col>
               <Col md={3}>
@@ -146,9 +165,9 @@ const Relatorio = () => {
                   type='date'
                   name='ate'
                   id='ate'
+                  min={initialDate}
+                  max={today}
                   placeholder='Data final'
-                  onChange={onChangeField}
-                  onFocus={onChangeField}
                 />
               </Col>
             </Row>
@@ -157,7 +176,11 @@ const Relatorio = () => {
             </Button>
           </Form>
         )}
-        {returnBusca && 'Resultado do relatório'}
+        {returnBusca && (
+          <Col md={12}>
+            <ProtocolList data={returnBusca} showProtocolNumber='true' />
+          </Col>
+        )}
       </FormReport>
     </>
   );
