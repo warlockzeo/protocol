@@ -23,8 +23,8 @@ const login = async (data) => {
       let tokenJwt = response.data.jwt;
       let expire_at = response.data.expireAt;
 
-      localStorage.setItem('access_token', tokenJwt);
-      localStorage.setItem('expire_at', expire_at); //dias para expirar
+      sessionStorage.setItem('access_token', tokenJwt);
+      sessionStorage.setItem('expire_at', expire_at); //dias para expirar
       console.log('Loged In');
 
       window.location.href = '/home/';
@@ -36,14 +36,14 @@ const login = async (data) => {
 };
 
 const logout = () => {
-  localStorage.removeItem('access_token');
-  localStorage.removeItem('expire_at');
+  sessionStorage.removeItem('access_token');
+  sessionStorage.removeItem('expire_at');
   console.log('Loged Out');
   window.location.href = '/login';
   return <Redirect to={{ pathname: '/login' }} />;
 };
 
-const userAuth = localStorage.getItem('access_token');
+const userAuth = sessionStorage.getItem('access_token');
 
 const isAuthenticated = () => !!userAuth;
 

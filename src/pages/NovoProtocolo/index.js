@@ -12,7 +12,7 @@ import jwt from 'jwt-decode';
 import Loader from '../../components/Loader';
 
 const PROTOCOL_ENDPOINT = `${process.env.REACT_APP_URLBASEAPI}/protocolos`;
-const tokenJwt = localStorage.getItem('access_token');
+const tokenJwt = sessionStorage.getItem('access_token');
 const actualUser = tokenJwt && jwt(tokenJwt).data;
 
 const schema = Yup.object().shape({
@@ -84,7 +84,7 @@ const NovoProtocolo = () => {
             data: JSON.stringify({ option: 'resend', body: { ...newData } }),
           });
           setTimeout(() => {
-            localStorage.removeItem('protocolo');
+            sessionStorage.removeItem('protocolo');
             window.open(`/`, '_self');
           }, 1500);
         } else {
@@ -181,7 +181,7 @@ const NovoProtocolo = () => {
     setOrigens(dataOrigens);
 
     if (reg) {
-      const storageProtocolo = JSON.parse(localStorage.getItem('protocolo'));
+      const storageProtocolo = JSON.parse(sessionStorage.getItem('protocolo'));
       setProtocolo(storageProtocolo.protocolo);
       setDestinos(dataOrigens.filter((origem) => origem.id !== actualUser.reg));
     }

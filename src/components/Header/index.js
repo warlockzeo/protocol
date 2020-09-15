@@ -36,7 +36,7 @@ const SubTitulo = Styled.h2`
   font-size: 1.5em;
 `;
 
-const tokenJwt = localStorage.getItem('access_token');
+const tokenJwt = sessionStorage.getItem('access_token');
 const user = tokenJwt && jwt(tokenJwt).data;
 
 const Header = () => {

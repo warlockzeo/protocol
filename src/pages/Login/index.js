@@ -51,7 +51,7 @@ const Login = () => {
 
       {isLoading ? (
         <Loader />
-      ) : !localStorage.getItem('access_token') ? (
+      ) : !sessionStorage.getItem('access_token') ? (
         <Form onSubmit={onSubmit} schema={schema}>
           <Row>
             <Col md={6}>

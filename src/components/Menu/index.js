@@ -26,7 +26,7 @@ const Menu = ({ logout }) => {
 
   const menuCss = menuIsOpen && 'menuShow';
 
-  const tokenJwt = localStorage.getItem('access_token');
+  const tokenJwt = sessionStorage.getItem('access_token');
   const user = tokenJwt && jwt(tokenJwt).data;
 
   return (

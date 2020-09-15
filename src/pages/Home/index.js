@@ -6,7 +6,7 @@ import jwt from 'jwt-decode';
 import AccordionCard from '../../components/AccordionCard';
 
 const SIGNUP_ENDPOINT = `${process.env.REACT_APP_URLBASEAPI}/protocolos`;
-const tokenJwt = localStorage.getItem('access_token');
+const tokenJwt = sessionStorage.getItem('access_token');
 const actualUser = tokenJwt && jwt(tokenJwt).data;
 
 const Home = () => {
@@ -56,7 +56,7 @@ const Home = () => {
   };
 
   const encaminharProtocolo = (data) => {
-    localStorage.setItem('protocolo', JSON.stringify(data));
+    sessionStorage.setItem('protocolo', JSON.stringify(data));
     window.open(`/encaminhamento/busca/${data.reg}`, '_self');
   };
 
