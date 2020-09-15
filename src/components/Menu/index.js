@@ -37,9 +37,14 @@ const Menu = ({ logout }) => {
       <ul className={`menu ${menuCss}`}>
         {linksCode}
         {user?.nivel >= '10' && (
-          <li className='menu__link'>
-            <Link to='/usuarios'>Usuários</Link>
-          </li>
+          <>
+            <li className='menu__link'>
+              <Link to='/relatorio'>Relatório</Link>
+            </li>
+            <li className='menu__link'>
+              <Link to='/usuarios'>Usuários</Link>
+            </li>
+          </>
         )}
         <li className='menu__link logout' onClick={logout}>
           Logout
