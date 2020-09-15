@@ -8,7 +8,6 @@ const links = [
   { titulo: 'Início', link: '/home' },
   { titulo: 'Novo', link: '/novoprotocolo' },
   { titulo: 'Busca', link: '/busca' },
-  { titulo: 'Relatório', link: '/relatorio' },
 ];
 
 const linksCode = links.map((link, i) => (
