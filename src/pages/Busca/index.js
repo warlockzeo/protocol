@@ -7,7 +7,8 @@ import Loader from '../../components/Loader';
 import Styled from 'styled-components';
 import * as Yup from 'yup';
 import axios from 'axios';
-import moment from 'moment';
+
+import ProtocolList from '../../components/ProtocolList';
 
 import './styles.css';
 
@@ -31,10 +32,6 @@ const DivResultado = Styled.div`
   width: 100%;
 `;
 
-const P = Styled.p`
-  margin-bottom: 0;
-`;
-
 const Busca = () => {
   const { protocol } = useParams();
   const [returnBusca, setReturnBusca] = useState([]);
@@ -55,7 +52,6 @@ const Busca = () => {
       if (Array.isArray(response.data)) {
         setReturnBusca(response.data);
       }
-      //console.log('retorno submit', response.data);
     } catch (e) {
       console.log(e);
     } finally {
@@ -67,74 +63,6 @@ const Busca = () => {
     setReturnBusca([]);
     setProtocolo('');
   };
-
-  let showReturnBusca = '';
-  if (returnBusca.length > 0) {
-    showReturnBusca = returnBusca.map((ret, i) => {
-      if (ret.copia === 'copia') {
-        const date = moment(ret.data);
-        return (
-          <Row key={i} className='return-busca'>
-            <Col md={2} className='text-center'>
-              {date.format('DD/MM/YYYY, h:mm:ss a')}
-            </Col>
-            <Col md={10}>
-              <P>
-                <strong>De: </strong>
-                {!!ret.origemNome ? ret.origemNome : ret.origem} -{' '}
-                {ret.dep_origem}
-                <br />
-                <strong>Para: </strong>
-                {!!ret.destinoNome ? ret.destinoNome : ret.destino} -
-                {ret.dep_destino} - Por:
-                {ret.portador} /{ret.mat}
-                <br />
-                <strong>{ret.copia}</strong>
-              </P>
-            </Col>
-          </Row>
-        );
-      } else {
-        const date = moment(ret.data);
-        return (
-          <Row key={i} className='return-busca-head'>
-            <Col md={2} className='text-center'>
-              {date.format('DD/MM/YYYY, h:mm:ss a')}
-            </Col>
-            <Col md={3}>
-              <P>
-                <strong>De:</strong>
-                {!!ret.origemNome ? ret.origemNome : ret.origem} -{' '}
-                {ret.dep_origem}
-                <br />
-                <strong>Para: </strong>
-                {!!ret.destinoNome ? ret.destinoNome : ret.destino} -
-                {ret.dep_destino}
-                <br />
-                <strong>Por: </strong> {ret.portador} /{ret.mat}
-                <br />
-                {ret.copia && (
-                  <span>
-                    <strong>Cópias para:</strong> {ret.copia}{' '}
-                  </span>
-                )}
-              </P>
-            </Col>
-            <Col md={4}>{ret.obs}</Col>
-            <Col md={1} className='text-center'>
-              {ret.doc}
-            </Col>
-            <Col md={1} className='text-center'>
-              {ret.situacao}
-            </Col>
-            <Col md={1} className='text-center'>
-              {ret.carater}
-            </Col>
-          </Row>
-        );
-      }
-    });
-  }
 
   useEffect(() => {
     if (protocol) {
@@ -196,7 +124,7 @@ const Busca = () => {
                   )}
 
                   <Col md={12}>
-                    <div id='return-busca'>{showReturnBusca}</div>
+                    <ProtocolList data={returnBusca} />
                   </Col>
                 </Col>
               </DivResultado>
