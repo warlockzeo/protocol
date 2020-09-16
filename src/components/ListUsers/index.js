@@ -1,5 +1,9 @@
 import React from 'react';
 import { Table, Button } from 'react-bootstrap';
+import jwt from 'jwt-decode';
+
+const tokenJwt = sessionStorage.getItem('access_token');
+const actualUser = tokenJwt && jwt(tokenJwt).data;
 
 const ListUsers = ({
   users,
@@ -34,15 +38,17 @@ const ListUsers = ({
           <td className='text-right'>
             {user.nivel !== '0' ? (
               <>
-                <Button
-                  size='sm'
-                  variant='primary'
-                  className='buttonMargim'
-                  onClick={() => onEdit(user.id)}
-                >
-                  Editar
-                </Button>
-                {user.nivel !== '10' && (
+                {user.nivel !== '100' && (
+                  <Button
+                    size='sm'
+                    variant='primary'
+                    className='buttonMargim'
+                    onClick={() => onEdit(user.id)}
+                  >
+                    Editar
+                  </Button>
+                )}
+                {user.nivel !== '10' && user.nivel !== '100' && (
                   <Button
                     size='sm'
                     variant='danger'
@@ -53,24 +59,29 @@ const ListUsers = ({
                   </Button>
                 )}
 
-                <Button
-                  size='sm'
-                  variant='secondary'
-                  className='buttonMargim'
-                  onClick={() => onChangePassword(user.id)}
-                >
-                  Mudar senha
-                </Button>
+                {((user.nivel === '100' && user.id === actualUser.reg) ||
+                  user.nivel !== '100') && (
+                  <Button
+                    size='sm'
+                    variant='secondary'
+                    className='buttonMargim'
+                    onClick={() => onChangePassword(user.id)}
+                  >
+                    Mudar senha
+                  </Button>
+                )}
               </>
             ) : (
-              <Button
-                size='sm'
-                variant='warning'
-                className='buttonMargim'
-                onClick={() => onUnblock(user.id)}
-              >
-                Desbloquear
-              </Button>
+              user.nivel === '0' && (
+                <Button
+                  size='sm'
+                  variant='warning'
+                  className='buttonMargim'
+                  onClick={() => onUnblock(user.id)}
+                >
+                  Desbloquear
+                </Button>
+              )
             )}
           </td>
         </tr>

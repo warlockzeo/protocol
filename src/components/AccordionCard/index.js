@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Table, Button, Accordion, Card } from 'react-bootstrap';
 import moment from 'moment';
 import Styled from 'styled-components';
@@ -22,6 +23,17 @@ const TD2 = Styled.td`
   width: 20%;
   max-width: 100px;
 `;
+
+const SPAN = Styled.span`
+  cursor: pointer;
+
+  :hover {
+    color: #ffffff;
+    font-weight: bold;
+    text-shadow: 0 0 2px #000;
+  }
+`;
+
 const validateDate = (data) => {
   const d1 = new Date(data);
   const d2 = new Date();
@@ -40,61 +52,94 @@ const AccordionCard = ({
   callBack,
   encaminhamentoClick,
 }) => {
+  const storage = useSelector((state) => state);
+
   const btnClick = (reg, situacao) => callBack(reg, situacao);
+
   let items = data;
+
   if (Array.isArray(data) && data.length > 0) {
     items = data.map((protocolo) => {
-      const date = moment(protocolo.data);
+      const {
+        reg,
+        origem,
+        origemNome,
+        dep_origem,
+        destino,
+        destinoNome,
+        dep_destino,
+        portador,
+        mat,
+        copia,
+        data,
+        obs,
+        doc,
+        situacao,
+        carater,
+        prazo,
+      } = protocolo;
+      const protocolNumber = protocolo.protocolo;
+
+      const copiaNames =
+        copia !== 'copia' &&
+        copia
+          .split(',')
+          .map((c) => {
+            const userName = storage.users.filter((user) => user.id === c);
+            return userName[0]?.nome;
+          })
+          .join(', ');
+
+      const date = moment(data);
+
       return (
         <tr
-          key={protocolo.reg}
-          className={
-            protocolo.prazo &&
-            protocolo.prazo !== '0000-00-00' &&
-            'table-danger'
-          }
+          key={reg}
+          className={prazo && prazo !== '0000-00-00' && 'table-danger'}
         >
           <TD className='text-center'>
-            <A href={`/busca/${protocolo.protocolo}`}>{protocolo.protocolo}</A>
+            <A href={`/busca/${protocolNumber}`}>{protocolNumber}</A>
           </TD>
           <TD className='text-center'>
             {date.format('DD/MM/YYYY, h:mm:ss a')}
           </TD>
           <TD2>
             <P>
-              <strong>De:</strong>{' '}
-              {!!protocolo.origemNome ? protocolo.origemNome : protocolo.origem}{' '}
-              - {protocolo.dep_origem}
+              <strong>De: </strong>
+              {!!origemNome ? origemNome : origem}
+              {!!dep_origem && ` - ${dep_origem}`}
               <br />
               <strong>Para: </strong>
-              {!!protocolo.destinoNome
-                ? protocolo.destinoNome
-                : protocolo.destino}{' '}
-              - {protocolo.dep_destino}
-              {protocolo.portador && (
+              {!!destinoNome ? destinoNome : destino}
+              {!!dep_destino && ` - ${dep_destino}`}
+              <br />
+              {!!portador && (
                 <>
+                  <strong>Por: </strong> {portador} / {mat}
                   <br />
-                  <strong>Por: </strong> {protocolo.portador} /{protocolo.mat}
                 </>
               )}
-              {protocolo.copia &&
-                (protocolo.copia === 'copia' ? (
-                  <strong>- Cópia</strong>
+              {copia &&
+                (copia === 'copia' ? (
+                  <strong>Cópia</strong>
                 ) : (
-                  <strong>- Cópias para: {protocolo.copia}</strong>
+                  <>
+                    <strong>Cópias para: </strong>
+                    {copiaNames}
+                  </>
                 ))}
             </P>
           </TD2>
-          <TD2>{protocolo.obs}</TD2>
-          <TD className='text-center'>{protocolo.doc}</TD>
-          <TD className='text-center'>{protocolo.situacao}</TD>
-          {protocolo.carater && (
+          <TD2>{obs}</TD2>
+          <TD className='text-center'>{doc}</TD>
+          <TD className='text-center'>{situacao}</TD>
+          {carater && (
             <TD className='text-center'>
-              {protocolo.carater}{' '}
-              {protocolo.prazo && protocolo.prazo !== '0000-00-00' && (
+              {carater}{' '}
+              {prazo && prazo !== '0000-00-00' && (
                 <>
                   <br />
-                  {validateDate(protocolo.prazo)} dias
+                  {validateDate(prazo)} dias
                 </>
               )}
             </TD>
@@ -106,9 +151,9 @@ const AccordionCard = ({
                   variant='primary'
                   type='submit'
                   className='form-control'
-                  onClick={() => btnClick(protocolo.reg, 'Recebido')}
+                  onClick={() => btnClick(reg, 'Recebido')}
                 >
-                  Recebido
+                  Receber
                 </Button>
               )}
               {btn.arquivado && (
@@ -116,9 +161,9 @@ const AccordionCard = ({
                   variant='info'
                   type='submit'
                   className='form-control'
-                  onClick={() => btnClick(protocolo.reg, 'Arquivado')}
+                  onClick={() => btnClick(reg, 'Arquivado')}
                 >
-                  Arquivado
+                  Arquivar
                 </Button>
               )}
               {btn.encaminhado && (
@@ -128,7 +173,7 @@ const AccordionCard = ({
                   className='form-control'
                   onClick={() => encaminhamentoClick(protocolo)}
                 >
-                  Encaminhado
+                  Encaminhar
                 </Button>
               )}
               {btn.analise && (
@@ -136,9 +181,9 @@ const AccordionCard = ({
                   variant='warning'
                   type='submit'
                   className='form-control'
-                  onClick={() => btnClick(protocolo.reg, 'Processo em análise')}
+                  onClick={() => btnClick(reg, 'Processo em análise')}
                 >
-                  Processo em Análise
+                  Analisar Processo
                 </Button>
               )}
               {btn.concluido && (
@@ -146,9 +191,9 @@ const AccordionCard = ({
                   variant='success'
                   type='submit'
                   className='form-control'
-                  onClick={() => btnClick(protocolo.reg, 'Processo concluído')}
+                  onClick={() => btnClick(reg, 'Processo concluído')}
                 >
-                  Processo Concluído
+                  Concluir Processo
                 </Button>
               )}
             </TD>
@@ -165,14 +210,15 @@ const AccordionCard = ({
         eventKey={accordionKey}
         className={className}
         onClick={onClick}
+        style={{ cursor: 'pointer', fontWeight: 'bold' }}
       >
-        {title}
+        <SPAN>{title}</SPAN>
       </Accordion.Toggle>
       <Accordion.Collapse eventKey={accordionKey}>
         <Card.Body>
           <>
             <Table hover responsive>
-              {items}
+              <tbody>{items}</tbody>
             </Table>
           </>
         </Card.Body>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import Styled from 'styled-components';
 import moment from 'moment';
@@ -9,6 +10,8 @@ const P = Styled.p`
 
 const ProtocolList = ({ data, showProtocolNumber }) => {
   let list;
+  const storage = useSelector((state) => state);
+
   if (data.length > 0) {
     list = data.map((protocolo, i) => {
       const {
@@ -27,6 +30,16 @@ const ProtocolList = ({ data, showProtocolNumber }) => {
         situacao,
         carater,
       } = protocolo;
+
+      const copiaNames =
+        copia !== 'copia' &&
+        copia
+          .split(',')
+          .map((c) => {
+            const userName = storage.users.filter((user) => user.id === c);
+            return userName[0]?.nome;
+          })
+          .join(', ');
 
       const protocolNumber = showProtocolNumber && protocolo.protocolo;
       const protocolNumberLine = showProtocolNumber ? (
@@ -48,12 +61,19 @@ const ProtocolList = ({ data, showProtocolNumber }) => {
             <Col md={showProtocolNumber ? 10 : 11}>
               <P>
                 <strong>De: </strong>
-                {!!origemNome ? origemNome : origem} - {dep_origem}
+                {!!origemNome ? origemNome : origem}{' '}
+                {!!dep_origem && `- ${dep_origem}`}
                 <br />
                 <strong>Para: </strong>
-                {!!destinoNome ? destinoNome : destino} -{dep_destino} - Por:
-                {portador} /{mat}
+                {!!destinoNome ? destinoNome : destino}{' '}
+                {!!dep_destino && `- ${dep_destino}`}
                 <br />
+                {!!portador && (
+                  <>
+                    <strong>Por: </strong> {portador} / {mat}
+                    <br />
+                  </>
+                )}
                 <strong>{copia}</strong>
               </P>
             </Col>
@@ -68,17 +88,23 @@ const ProtocolList = ({ data, showProtocolNumber }) => {
             </Col>
             <Col md={3}>
               <P>
-                <strong>De:</strong>
-                {!!origemNome ? origemNome : origem} - {dep_origem}
+                <strong>De: </strong>
+                {!!origemNome ? origemNome : origem}{' '}
+                {!!dep_origem && `- ${dep_origem}`}
                 <br />
                 <strong>Para: </strong>
-                {!!destinoNome ? destinoNome : destino} -{dep_destino}
+                {!!destinoNome ? destinoNome : destino}{' '}
+                {!!dep_destino && `- ${dep_destino}`}
                 <br />
-                <strong>Por: </strong> {portador} /{mat}
-                <br />
+                {!!portador && (
+                  <>
+                    <strong>Por: </strong> {portador} / {mat}
+                    <br />
+                  </>
+                )}
                 {copia && (
                   <span>
-                    <strong>Cópias para:</strong> {copia}{' '}
+                    <strong>Cópias para:</strong> {copiaNames}{' '}
                   </span>
                 )}
               </P>

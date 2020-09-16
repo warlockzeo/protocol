@@ -14,7 +14,7 @@ const login = async (data) => {
       data: JSON.stringify(data),
     });
 
-    console.log(response.data);
+    //console.log(response.data);
     if (
       response.status === 200 &&
       response.data.jwt &&
