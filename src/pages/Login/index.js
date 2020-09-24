@@ -77,7 +77,12 @@ const Login = () => {
               />
             </Col>
           </Row>
-          <Button type='submit' className='form-control' color='danger'>
+          <Button
+            type='submit'
+            className='form-control'
+            color='danger'
+            style={{ backgroundColor: '#0054AD' }}
+          >
             Login
           </Button>
         </Form>
