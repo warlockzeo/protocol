@@ -5,7 +5,7 @@ import jwt from 'jwt-decode';
 import './styles.css';
 
 const links = [
-  { titulo: 'Início', link: '/home' },
+  { titulo: 'Início', link: '/' },
   { titulo: 'Novo', link: '/novoprotocolo' },
   { titulo: 'Busca', link: '/busca' },
 ];

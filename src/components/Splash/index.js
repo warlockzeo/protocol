@@ -7,7 +7,7 @@ const SplashScreen = () => {
   return (
     <div className='splashScreen'>
       <img
-        src='/assets/images/logo-pmtn.jpg'
+        src='./assets/images/logo-pmtn.jpg'
         alt='Protocolo Central'
         className='logo'
       />

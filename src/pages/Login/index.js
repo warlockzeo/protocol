@@ -47,7 +47,7 @@ const Login = () => {
 
   return (
     <Wrap>
-      <Image alt='Logotipo' src='/assets/images/logo-pmtn.jpg' />
+      <Image alt='Logotipo' src='./assets/images/logo-pmtn.jpg' />
 
       {isLoading ? (
         <Loader />

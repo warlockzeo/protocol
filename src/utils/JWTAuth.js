@@ -27,8 +27,8 @@ const login = async (data) => {
       sessionStorage.setItem('expire_at', expire_at); //dias para expirar
       console.log('Loged In');
 
-      window.location.href = '/home/';
-      return <Redirect to={{ pathname: '/home' }} />;
+      window.location.href = '/';
+      return <Redirect to={{ pathname: '/' }} />;
     }
   } catch (e) {
     return { message: 'Usuario ou senha inválidos' };
