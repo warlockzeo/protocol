@@ -17,8 +17,8 @@ const Routes = () => (
     <PrivateRoute exact path='/home' component={Home} />
     <Route path='/login' component={Login} />
     <PrivateRoute exact path='/novoprotocolo' component={NovoProtocolo} />
-    <PrivateRoute exact path='/busca/' component={Busca} />
     <PrivateRoute exact path='/busca/:protocol' component={Busca} />
+    <PrivateRoute exact path='/busca/' component={Busca} />
     <PrivateRoute exact path='/relatorio' component={Relatorio} level='10' />
     <PrivateRoute exact path='/usuarios' component={Usuarios} level='10' />
     <PrivateRoute exact path='/encaminhamento/:reg' component={NovoProtocolo} />
