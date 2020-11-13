@@ -33,8 +33,8 @@ const ListUsers = ({
               : ''
           }
         >
-          <td>{user.nome}</td>
           <td>{user.login}</td>
+          <td>{user.nome}</td>
           <td className='text-right'>
             {user.nivel !== '0' ? (
               <>

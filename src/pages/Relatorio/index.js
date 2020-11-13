@@ -70,6 +70,7 @@ const Relatorio = () => {
     try {
       const newData = {
         ...data,
+        secretariaNome: '',
       };
 
       const ret = await axios({

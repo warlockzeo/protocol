@@ -27,6 +27,7 @@ const Menu = ({ logout }) => {
 
   const tokenJwt = sessionStorage.getItem('access_token');
   const user = tokenJwt && jwt(tokenJwt).data;
+  //  console.log(user);
 
   return (
     <>

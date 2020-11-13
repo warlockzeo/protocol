@@ -63,6 +63,7 @@ const Login = () => {
                 placeholder='Login'
                 onChange={onChangeField}
                 onFocus={onChangeField}
+                style={{ marginBottom: 10 }}
               />
             </Col>
             <Col md={6}>

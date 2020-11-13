@@ -4,15 +4,52 @@
         return $result;
     }
 
+    function cleaningString ($data){
+        $reg="";
+        $regex = '/[àáâéèêíóôúÁÀÂÈÉÊÍÓÔÚºª]/mx';
+        //$regex= '/[^0-9a-zA-Z- .,;:?!]+/mi';
+        preg_match_all($regex, $data, $matches, PREG_SET_ORDER, 0);
+        if(count($matches)>0){
+            $reg="1";
+            $charset = mb_detect_encoding($data, 'auto');
+            $charsetToUse = $charset === "ASCII" ? "ISO-8859-1" : "UTF-8"; //users fica ok, protocols não
+            $htmlentitiesconverted = htmlentities($data, ENT_NOQUOTES, $charsetToUse, false);
+            $charset2 = mb_detect_encoding($htmlentitiesconverted, 'auto');
+            if($htmlentitiesconverted === ""){
+                $htmlentitiesconverted = htmlentities($data, ENT_NOQUOTES, "ISO-8859-1", false);
+            }
+            $htmlentitiesconverted = html_entity_decode($htmlentitiesconverted, ENT_DISALLOWED, "UTF-8");
+            
+            //echo "$charset - $charset2 - reg:$reg - $data - $htmlentitiesconverted \r\n";
+        } else {
+            $reg="0";
+            $charset = mb_detect_encoding($data, 'auto');
+            $htmlentitiesconverted = htmlentities($data, ENT_NOQUOTES, "ISO-8859-1", false);
+            $charset2 = mb_detect_encoding($htmlentitiesconverted, 'auto');
+            $htmlentitiesconverted = html_entity_decode($htmlentitiesconverted, ENT_DISALLOWED, "UTF-8");
+
+            //echo "$charset - $charset2 - reg:$reg - $data - $htmlentitiesconverted \r\n";
+        }
+
+        $result = strip_tags(trim($htmlentitiesconverted));
+
+        
+        return $result;
+    }
+
     function validateData ($data) {
         if(is_array($data) || is_object($data)) {
-            foreach($data as $d){
-                validateData($d);
+            $ret = [];
+            foreach($data as $k => $v){
+                $ret[$k] = validateData($v);
             }
+            return $ret;
+
         } elseif(is_numeric($data)) {
             return $data;
         } else {
-            return cleaning($data);
+            //echo cleaningString($data);
+            return cleaningString($data);
         }
     }
 
