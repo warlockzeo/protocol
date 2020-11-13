@@ -2,7 +2,8 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 //import jwt from 'jwt-decode';
-const SERVER_URL = 'http://protocolo.v2.api';
+//const SERVER_URL = 'http://protocolo.v2.api';
+const SERVER_URL = `${process.env.REACT_APP_URLBASEAPI}`;
 
 const login = async (data) => {
   const LOGIN_ENDPOINT = `${SERVER_URL}/login.php`;
