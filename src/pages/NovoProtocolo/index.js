@@ -17,13 +17,13 @@ const actualUser = tokenJwt && jwt(tokenJwt).data;
 
 const schema = Yup.object().shape({
   origem: Yup.string().required('Selecione uma origem'),
-  origemDepartamento: Yup.string(),
+  dep_origem: Yup.string(),
   destino: Yup.string().required('Selecione um destino'),
-  destinoDepartamento: Yup.string(),
+  dep_destino: Yup.string(),
   comCopia: Yup.string(),
   copia: Yup.string(),
-  portadorNome: Yup.string(),
-  portadorMatricula: Yup.string(),
+  portador: Yup.string(),
+  mat: Yup.string(),
   carater: Yup.string().required('Selecione o caráter'),
   prazo: Yup.string(),
   caraterOutros: Yup.string(),
@@ -59,6 +59,7 @@ const NovoProtocolo = () => {
   const [origens, setOrigens] = useState([]);
   const [destinos, setDestinos] = useState([]);
   const [protocolo, setProtocolo] = useState('');
+  const [title, setTitle] = useState('Novo');
   const storage = useSelector((state) => state);
 
   const onSubmit = async (data) => {
@@ -72,16 +73,19 @@ const NovoProtocolo = () => {
             copia: multiSelectValue,
             documento: documentoValues,
             reg,
-            protocolo,
+            protocolo: protocolo.protocolo,
             origem: actualUser.reg,
-            origemDepartamento: '',
+            //dep_origem: '',
           };
 
           await axios({
             method: 'post',
             responseType: 'json',
             url: PROTOCOL_ENDPOINT,
-            data: JSON.stringify({ option: 'resend', body: { ...newData } }),
+            data: JSON.stringify({
+              option: title === 'Editar' ? 'edit' : 'resend',
+              body: { ...newData },
+            }),
           });
           setTimeout(() => {
             sessionStorage.removeItem('protocolo');
@@ -182,14 +186,19 @@ const NovoProtocolo = () => {
 
     if (reg) {
       const storageProtocolo = JSON.parse(sessionStorage.getItem('protocolo'));
-      setProtocolo(storageProtocolo.protocolo);
+      setProtocolo(storageProtocolo);
       setDestinos(dataOrigens.filter((origem) => origem.id !== actualUser.reg));
+
+      const url = window.location.href.split('/');
+      setTitle(url[3].charAt(0).toUpperCase() + url[3].slice(1));
     }
   }, [storage.users]);
 
   return (
     <>
-      <h1>{reg ? `Encaminhar protocolo ${protocolo}` : 'Novo Protocolo'}</h1>
+      <h1>{`${title} protocolo ${
+        !!protocolo.protocolo ? protocolo.protocolo : ''
+      }`}</h1>
       <FormCadastro>
         {isLoading ? (
           <Loader />
@@ -207,7 +216,8 @@ const NovoProtocolo = () => {
           <Form
             onSubmit={onSubmit}
             schema={schema}
-            initialData={reg && { origem: actualUser.reg }}
+            // initialData={reg && { origem: actualUser.reg }}
+            initialData={protocolo}
           >
             <Row>
               {!reg ? (
@@ -227,8 +237,8 @@ const NovoProtocolo = () => {
                     <Input
                       className='form-control'
                       type='text'
-                      name='origemDepartamento'
-                      id='origemDepartamento'
+                      name='dep_origem'
+                      id='dep_origem'
                       placeholder='Dep. origem.  Opcional'
                     />
                   </Col>
@@ -250,8 +260,8 @@ const NovoProtocolo = () => {
                 <Input
                   className='form-control'
                   type='text'
-                  name='destinoDepartamento'
-                  id='destinoDepartamento'
+                  name='dep_destino'
+                  id='dep_destino'
                   placeholder='Dep. destino.  Opcional'
                 />
               </Col>
@@ -286,8 +296,8 @@ const NovoProtocolo = () => {
                 <Input
                   className='form-control'
                   type='text'
-                  name='portadorNome'
-                  id='portadorNome'
+                  name='portador'
+                  id='portador'
                   placeholder='Nome do portador'
                 />
               </Col>
@@ -296,8 +306,8 @@ const NovoProtocolo = () => {
                 <Input
                   className='form-control'
                   type='text'
-                  name='portadorMatricula'
-                  id='portadorMatricula'
+                  name='mat'
+                  id='mat'
                   placeholder='Matrícula do portador'
                 />
               </Col>

@@ -57,7 +57,7 @@ const Home = () => {
 
   const encaminharProtocolo = (data) => {
     sessionStorage.setItem('protocolo', JSON.stringify(data));
-    window.open(`/encaminhamento/busca/${data.reg}`, '_self');
+    window.open(`/encaminhamento/${data.reg}`, '_self');
   };
 
   return (

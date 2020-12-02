@@ -9,7 +9,7 @@ const user = tokenJwt && jwt(tokenJwt).data;
 const userLevel = user?.nivel;
 
 const PrivateRoute = ({ component: Component, level, ...rest }) => {
-  console.log(userLevel, level);
+  //console.log(userLevel, level);
   const levelOK = !level || userLevel >= level ? true : false;
   return (
     <Route

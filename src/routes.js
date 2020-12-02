@@ -22,6 +22,7 @@ const Routes = () => (
     <PrivateRoute exact path='/relatorio' component={Relatorio} level='10' />
     <PrivateRoute exact path='/usuarios' component={Usuarios} level='10' />
     <PrivateRoute exact path='/encaminhamento/:reg' component={NovoProtocolo} />
+    <PrivateRoute exact path='/editar/:reg' component={NovoProtocolo} />
     <Route component={NoMatchPage} />
   </Switch>
 );

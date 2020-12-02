@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Alert, Row, Col, Button } from 'react-bootstrap';
@@ -36,6 +35,7 @@ const Busca = () => {
   const { protocol } = useParams();
   const [returnBusca, setReturnBusca] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [protocolo, setProtocolo] = useState('');
 
   const onSubmit = async ({ search }) => {
@@ -51,12 +51,48 @@ const Busca = () => {
 
       if (Array.isArray(response.data)) {
         setReturnBusca(response.data);
+      } else {
+        setProtocolo('');
       }
     } catch (e) {
       console.log(e);
     } finally {
       setTimeout(() => setIsLoading(false), 1500);
     }
+  };
+
+  const onDelete = () => {
+    setShowConfirmDelete(true);
+  };
+
+  const handleDeleteYes = async (data) => {
+    setIsLoading(true);
+    try {
+      const response = await axios({
+        method: 'post',
+        responseType: 'json',
+        url: SIGNUP_ENDPOINT,
+        data: JSON.stringify({ option: 'delete', body: { protocolo: data } }),
+      });
+      if (response.data?.message === 'success') {
+        setReturnBusca([]);
+        setProtocolo('');
+        setShowConfirmDelete(false);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setTimeout(() => setIsLoading(false), 1500);
+    }
+  };
+
+  const handleDeleteNo = () => {
+    setShowConfirmDelete(false);
+  };
+
+  const onEdit = () => {
+    sessionStorage.setItem('protocolo', JSON.stringify(returnBusca[0]));
+    window.open(`/editar/${returnBusca[0].reg}`, '_self');
   };
 
   const onChangeField = () => {
@@ -67,7 +103,7 @@ const Busca = () => {
   useEffect(() => {
     if (protocol) {
       onSubmit({ search: protocol });
-      console.log(protocol);
+      //      console.log(protocol);
     }
   }, [protocol]);
 
@@ -106,12 +142,86 @@ const Busca = () => {
                   {protocolo && (
                     <div
                       style={{
-                        color: '#ff0000',
-                        margin: '20px 0',
-                        fontWeight: 'bold',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between !important',
                       }}
                     >
-                      Protocolo: {protocolo}
+                      {showConfirmDelete ? (
+                        <>
+                          <Col
+                            md={2}
+                            style={{
+                              color: '#ff0000',
+                              margin: '20px 0',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            Confirma exclusão do protocolo {protocolo}
+                          </Col>
+                          <Col md={5}>
+                            <Button
+                              className='form-control btn btn-success'
+                              onClick={() => {
+                                handleDeleteYes(protocolo);
+                              }}
+                            >
+                              Sim
+                            </Button>
+                          </Col>
+                          <Col md={5}>
+                            <Button
+                              className='form-control btn btn-danger'
+                              onClick={handleDeleteNo}
+                            >
+                              Não
+                            </Button>
+                          </Col>
+                        </>
+                      ) : (
+                        <>
+                          <Col
+                            md={2}
+                            style={{
+                              color: '#ff0000',
+                              margin: '20px 0',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            Protocolo: {protocolo}
+                          </Col>
+                          {returnBusca.length > 0 ? (
+                            <>
+                              <Col md={5}>
+                                <Button
+                                  className='form-control btn btn-danger'
+                                  onClick={() => {
+                                    onDelete();
+                                  }}
+                                >
+                                  Excluir
+                                </Button>
+                              </Col>
+                              {returnBusca.length === 1 ? (
+                                <Col md={5}>
+                                  <Button
+                                    className='form-control btn btn-info'
+                                    onClick={() => {
+                                      onEdit(protocolo);
+                                    }}
+                                  >
+                                    Editar
+                                  </Button>
+                                </Col>
+                              ) : (
+                                ''
+                              )}
+                            </>
+                          ) : (
+                            ''
+                          )}
+                        </>
+                      )}
                     </div>
                   )}
 
