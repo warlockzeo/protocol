@@ -22,7 +22,6 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "jwt-decode": "^2.2.0",
     "moment": "^2.27.0",
-    "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.2.2",
     "react-dom": "^16.13.1",
@@ -31,6 +30,7 @@
     "react-scripts": "3.4.1",
     "react-select": "^3.1.0",
     "redux": "^4.0.5",
+    "sass": "^1.30.0",
     "styled-components": "^5.0.1",
     "typescript": "^3.9.7",
     "yup": "^0.29.1"

@@ -16,6 +16,7 @@
 	RewriteRule ^api/users/?$ /api/ClassUsers.php [NC]
 	RewriteRule ^api/protocolos/?$ /api/ClassProtocol.php [NC]
 	
+	RewriteRule ^([a-z0-9-]+)/([a-z0-9-]+)/?$ /index.html [NC]
 	RewriteRule ^([a-z0-9-]+)/?$ /index.html [NC]
 	
 </IfModule>
