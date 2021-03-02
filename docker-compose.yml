@@ -1,0 +1,56 @@
+version: '3.4'
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - /var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: myrootpass
+      MYSQL_DATABASE: protocolo central
+      MYSQL_USER: warlock
+      MYSQL_PASSWORD: smtqsgjh
+
+  php:
+    depends_on:
+      - db
+    build: .
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./build:/var/www/html"
+    restart: always
+    links: 
+      - db
+
+  api:
+    depends_on:
+      - db
+    build: .
+    ports:
+      - "85:80"
+    volumes:
+      - "./api:/var/www/html"
+    restart: always
+    environment:
+      DB_HOST: db:3306
+      DB_USER: warlock
+      DB_PASSWORD: smtqsgjh
+    links: 
+      - db
+
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 88:80
+    environment:
+      PMA_HOST: db:3306
+      MYSQL_ROOT_PASSWORD: myrootpass
+
+volumes:
+    db_data:

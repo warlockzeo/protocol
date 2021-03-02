@@ -9,9 +9,6 @@
 
 	# Mensagem de erro personalizada.
 	ErrorDocument 403 "Desculpe! Acesso nao permitido
-	
-	#RewriteCond %{http_host} ^http://protocolo.v2 [nc]
-	#RewriteRule ^(.*)$ https://protocolo.v2/$1 [r=301,nc]
 
 	RewriteRule ^api/users/?$ /api/ClassUsers.php [NC]
 	RewriteRule ^api/protocolos/?$ /api/ClassProtocol.php [NC]
