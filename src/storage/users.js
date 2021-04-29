@@ -2,10 +2,10 @@
 
 function reducer(state = { users: [] }, action) {
   switch (action.type) {
-    case 'List':
+    case "List":
       return { users: action.data };
     default:
-      return 'Carregando';
+      return "Carregando";
   }
 }
 

@@ -1,8 +1,8 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Table, Button, Accordion, Card } from 'react-bootstrap';
-import moment from 'moment';
-import Styled from 'styled-components';
+import React from "react";
+import { useSelector } from "react-redux";
+import { Table, Button, Accordion, Card } from "react-bootstrap";
+import moment from "moment";
+import Styled from "styled-components";
 
 const P = Styled.p`
   margin-bottom: 0;
@@ -81,27 +81,27 @@ const AccordionCard = ({
       const protocolNumber = protocolo.protocolo;
 
       const copiaNames =
-        copia !== 'copia' &&
+        copia !== "copia" &&
         copia
-          .split(',')
+          .split(",")
           .map((c) => {
             const userName = storage.users.filter((user) => user.id === c);
             return userName[0]?.nome;
           })
-          .join(', ');
+          .join(", ");
 
       const date = moment(data);
 
       return (
         <tr
           key={reg}
-          className={prazo && prazo !== '0000-00-00' && 'table-danger'}
+          className={prazo && prazo !== "0000-00-00" && "table-danger"}
         >
-          <TD className='text-center'>
+          <TD className="text-center">
             <A href={`/busca/${protocolNumber}`}>{protocolNumber}</A>
           </TD>
-          <TD className='text-center'>
-            {date.format('DD/MM/YYYY, h:mm:ss a')}
+          <TD className="text-center">
+            {date.format("DD/MM/YYYY, h:mm:ss a")}
           </TD>
           <TD2>
             <P>
@@ -120,7 +120,7 @@ const AccordionCard = ({
                 </>
               )}
               {copia &&
-                (copia === 'copia' ? (
+                (copia === "copia" ? (
                   <strong>Cópia</strong>
                 ) : (
                   <>
@@ -131,12 +131,12 @@ const AccordionCard = ({
             </P>
           </TD2>
           <TD2>{obs}</TD2>
-          <TD className='text-center'>{doc}</TD>
-          <TD className='text-center'>{situacao}</TD>
+          <TD className="text-center">{doc}</TD>
+          <TD className="text-center">{situacao}</TD>
           {carater && (
-            <TD className='text-center'>
-              {carater}{' '}
-              {prazo && prazo !== '0000-00-00' && (
+            <TD className="text-center">
+              {carater}{" "}
+              {prazo && prazo !== "0000-00-00" && (
                 <>
                   <br />
                   {validateDate(prazo)} dias
@@ -145,32 +145,32 @@ const AccordionCard = ({
             </TD>
           )}
           {btn.show && (
-            <TD className='text-center' style={{ width: '16%', maxWidth: 100 }}>
+            <TD className="text-center" style={{ width: "16%", maxWidth: 100 }}>
               {btn.recebido && (
                 <Button
-                  variant='primary'
-                  type='submit'
-                  className='form-control'
-                  onClick={() => btnClick(reg, 'Recebido')}
+                  variant="primary"
+                  type="submit"
+                  className="form-control"
+                  onClick={() => btnClick(reg, "Recebido")}
                 >
                   Receber
                 </Button>
               )}
               {btn.arquivado && (
                 <Button
-                  variant='info'
-                  type='submit'
-                  className='form-control'
-                  onClick={() => btnClick(reg, 'Arquivado')}
+                  variant="info"
+                  type="submit"
+                  className="form-control"
+                  onClick={() => btnClick(reg, "Arquivado")}
                 >
                   Arquivar
                 </Button>
               )}
               {btn.encaminhado && (
                 <Button
-                  variant='secondary'
-                  type='submit'
-                  className='form-control'
+                  variant="secondary"
+                  type="submit"
+                  className="form-control"
                   onClick={() => encaminhamentoClick(protocolo)}
                 >
                   Encaminhar
@@ -178,20 +178,20 @@ const AccordionCard = ({
               )}
               {btn.analise && (
                 <Button
-                  variant='warning'
-                  type='submit'
-                  className='form-control'
-                  onClick={() => btnClick(reg, 'Processo em análise')}
+                  variant="warning"
+                  type="submit"
+                  className="form-control"
+                  onClick={() => btnClick(reg, "Processo em análise")}
                 >
                   Analisar Processo
                 </Button>
               )}
               {btn.concluido && (
                 <Button
-                  variant='success'
-                  type='submit'
-                  className='form-control'
-                  onClick={() => btnClick(reg, 'Processo concluído')}
+                  variant="success"
+                  type="submit"
+                  className="form-control"
+                  onClick={() => btnClick(reg, "Processo concluído")}
                 >
                   Concluir Processo
                 </Button>
@@ -210,7 +210,7 @@ const AccordionCard = ({
         eventKey={accordionKey}
         className={className}
         onClick={onClick}
-        style={{ cursor: 'pointer', fontWeight: 'bold' }}
+        style={{ cursor: "pointer", fontWeight: "bold" }}
       >
         <SPAN>{title}</SPAN>
       </Accordion.Toggle>
